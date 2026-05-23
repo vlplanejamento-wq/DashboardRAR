@@ -86,9 +86,10 @@ tr:hover td{background:#f8fbfe}
 .b-good{background:rgba(26,158,75,.12);color:var(--good)}
 .b-bad{background:rgba(226,59,59,.12);color:var(--bad)}
 /* Balloons (PLS, Índices, Orçamento) */
-.pls-wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.pls-wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:flex-start}
 .balloon{position:relative;background:linear-gradient(150deg,#fff, #f4fbff);border:1.5px solid var(--line);
-  border-radius:18px;padding:16px 16px 18px;text-align:center;box-shadow:0 4px 14px rgba(28,45,67,.07)}
+  border-radius:18px;padding:16px 16px 18px;text-align:center;box-shadow:0 4px 14px rgba(28,45,67,.07);
+  width:220px;flex-shrink:0}
 .balloon::after{content:"";position:absolute;left:34px;bottom:-9px;width:18px;height:18px;background:#f4fbff;
   border-right:1.5px solid var(--line);border-bottom:1.5px solid var(--line);transform:rotate(45deg)}
 .balloon.bad{background:linear-gradient(150deg,#fff,#fdf3f3);border-color:rgba(226,59,59,.35)}
@@ -118,8 +119,24 @@ tr:hover td{background:#f8fbfe}
   color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
 .empty{color:var(--muted);font-size:13px;font-style:italic;padding:8px 0}
 .footer{text-align:center;color:var(--muted);font-size:11.5px;margin-top:26px}
-@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}.dev-grid{grid-template-columns:1fr}.pls-wrap{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.kpis{grid-template-columns:repeat(2,1fr)}.topbar{flex-wrap:wrap}.pls-wrap{grid-template-columns:1fr}}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}.dev-grid{grid-template-columns:1fr}}
+@media(max-width:600px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .topbar{flex-wrap:wrap}
+  .balloon{width:calc(50% - 8px)}
+  .chartbox{height:210px}
+  .card{padding:14px 10px}
+  .card h2{font-size:13px}
+  .card .hint{font-size:11px;margin-bottom:10px}
+  .wrap{padding:12px 10px 40px}
+  .filters{gap:8px}
+  .filter{min-width:0;flex:1}
+  .kpi .k-val{font-size:20px}
+  .balloon{padding:12px 10px 14px}
+  .ring{width:76px;height:76px}
+  .ring .inner{width:58px;height:58px}
+  .ring .inner span{font-size:14px}
+}
 </style>
 </head>
 <body>
@@ -145,7 +162,6 @@ tr:hover td{background:#f8fbfe}
   <section class="grid">
     <div class="card">
       <h2>Avanço Físico — Planejado x Executado</h2>
-      <div class="hint">Executado em vermelho quando menor que o planejado, verde quando igual ou maior</div>
       <div class="chartbox"><canvas id="chAvanco"></canvas></div>
     </div>
     <div class="card">
@@ -154,22 +170,16 @@ tr:hover td{background:#f8fbfe}
       <div class="chartbox"><canvas id="chMO"></canvas></div>
     </div>
 
-    <div class="card full">
+    <div class="card">
       <h2>Estoque — Sistema x GE</h2>
       <div class="hint">Comparativo de estoque do Sistema e do GE por obra (R$)</div>
       <div class="chartbox"><canvas id="chEstoque"></canvas></div>
     </div>
 
-    <div class="card full" id="cardOrc">
+    <div class="card" id="cardOrc">
       <h2>Orçamento — Inicial x Término</h2>
       <div class="hint">Término em vermelho quando maior que o inicial (R$)</div>
       <div class="chartbox"><canvas id="chOrc"></canvas></div>
-    </div>
-
-    <div class="card full" id="cardPLS">
-      <h2>PLS</h2>
-      <div class="hint">PLS acumulada por módulo (anel) e próxima PLS por obra</div>
-      <div class="pls-wrap" id="plsWrap"></div>
     </div>
 
     <div class="card full" id="cardTabela">
@@ -201,7 +211,7 @@ tr:hover td{background:#f8fbfe}
 </div>
 
 <script>
-const DATA = [{"obra": "Vila Novo Curado", "mes": "Abril", "efetivoDireto": 55, "efetivoIndireto": 15, "idp": 0.92, "acumPlanejado": 1.0, "acumExecutado": 0.9209, "compMes": 0.0179, "execMes": 0.0118, "compProx": 0.0238, "diasAtraso": 122, "top3Prazo": ["1º Serralharia infra", "2º Paisagismo", "3º Pintura"], "ie": 1.21, "orcInicial": 29107104.03, "orcTermino": 35219775.84, "estoqueSistema": null, "estoqueGE": 824926.6, "top3Custo": ["1º Folha", "2º Aquisição e locação", "3º Contenção"], "plsModI": 0.95, "proxPlsModI": null, "plsModII": 0.9134, "proxPlsModII": 0.0125}, {"obra": "Vila Paraíso", "mes": "Abril", "efetivoDireto": 64, "efetivoIndireto": 18, "idp": 1.0, "acumPlanejado": 0.3934, "acumExecutado": 0.3934, "compMes": 0.0429, "execMes": 0.0155, "compProx": 0.0327, "diasAtraso": 0, "top3Prazo": ["1º Estrutura", "2º Rede de alta", "3º Infra incêndio"], "ie": 1.05, "orcInicial": 50687870.98, "orcTermino": 52006360.62, "estoqueSistema": 4414131.43, "estoqueGE": 1262475.51, "top3Custo": ["1º Folha", "2º Consumo", "3º Estrutura - Parede"], "plsModI": 0.4636, "proxPlsModI": 0.0145, "plsModII": 0.274, "proxPlsModII": 0.0363}, {"obra": "Urban Candeias", "mes": "Abril", "efetivoDireto": 48, "efetivoIndireto": 10, "idp": 0.99, "acumPlanejado": 0.5203, "acumExecutado": 0.5169, "compMes": 0.0599, "execMes": 0.0578, "compProx": 0.0696, "diasAtraso": 1, "top3Prazo": ["1º Base ETE", "2º Emboço de fachada", "3º Coberta"], "ie": 1.08, "orcInicial": 23820928.86, "orcTermino": 25021361.39, "estoqueSistema": 4572015.44, "estoqueGE": 529469.369, "top3Custo": ["1º Custo", "2º Gás", "3º Elevador"], "plsModI": 0.5494, "proxPlsModI": null, "plsModII": null, "proxPlsModII": null}, {"obra": "Vila Gonzaga", "mes": "Abril", "efetivoDireto": 52, "efetivoIndireto": 12, "idp": 0.92, "acumPlanejado": 0.1586, "acumExecutado": 0.146, "compMes": 0.0496, "execMes": 0.038, "compProx": 0.0389, "diasAtraso": 15, "top3Prazo": ["1º Estrutura", "2º Terraplenagem", "3º Contenções"], "ie": 0.99, "orcInicial": 49280872.61, "orcTermino": 47801773.55, "estoqueSistema": 5150453.22, "estoqueGE": 1137992.67, "top3Custo": ["1º Folha", "2º Revestimento de piso", "3º Aquisição e locação"], "plsModI": 0.1884, "proxPlsModI": null, "plsModII": 0.1295, "proxPlsModII": null}];
+const DATA = [{"obra": "Vila Novo Curado", "mes": "Abril", "efetivoDireto": 55, "efetivoIndireto": 15, "idp": 0.92, "acumPlanejado": 1.0, "acumExecutado": 0.9209, "compMes": 0.0179, "execMes": 0.0118, "compProx": 0.0238, "diasAtraso": 122, "top3Prazo": ["1º Serralharia infra", "2º Paisagismo", "3º Pintura"], "ie": 1.21, "orcInicial": 29107104.03, "orcTermino": 35219775.84, "estoqueSistema": null, "estoqueGE": 824926.6, "top3Custo": ["1º Folha (R$ 4,4mi)", "2º Aquisição e locação (R$ 1mi)", "3º Contenção (R$ 747k)"], "plsModI": 0.95, "proxPlsModI": null, "plsModII": 0.9134, "proxPlsModII": 0.0125}, {"obra": "Vila Paraíso", "mes": "Abril", "efetivoDireto": 64, "efetivoIndireto": 18, "idp": 1.0, "acumPlanejado": 0.3934, "acumExecutado": 0.3934, "compMes": 0.0429, "execMes": 0.0155, "compProx": 0.0327, "diasAtraso": 0, "top3Prazo": ["1º Estrutura", "2º Rede de alta", "3º Infra incêndio"], "ie": 1.05, "orcInicial": 50687870.98, "orcTermino": 52006360.62, "estoqueSistema": 4414131.43, "estoqueGE": 1262475.51, "top3Custo": ["1º Consumo (R$ 572k)", "2º Folha (R$ 362k)", "3º Estrutura - Parede (R$ 301k)"], "plsModI": 0.4636, "proxPlsModI": 0.0145, "plsModII": 0.274, "proxPlsModII": 0.0363}, {"obra": "Urban Candeias", "mes": "Abril", "efetivoDireto": 48, "efetivoIndireto": 10, "idp": 0.99, "acumPlanejado": 0.5203, "acumExecutado": 0.5169, "compMes": 0.0599, "execMes": 0.0578, "compProx": 0.0696, "diasAtraso": 1, "top3Prazo": ["1º Base ETE", "2º Emboço de fachada", "3º Coberta"], "ie": 1.08, "orcInicial": 23820928.86, "orcTermino": 25021361.39, "estoqueSistema": 4572015.44, "estoqueGE": 529469.369, "top3Custo": ["1º Folha (R$ 278k)", "2º Revestimento de piso (R$273k)", "3º  Aquisição e locação (R$256k)"], "plsModI": 0.5494, "proxPlsModI": null, "plsModII": null, "proxPlsModII": null}, {"obra": "Vila Gonzaga", "mes": "Abril", "efetivoDireto": 52, "efetivoIndireto": 12, "idp": 0.92, "acumPlanejado": 0.1586, "acumExecutado": 0.146, "compMes": 0.0496, "execMes": 0.038, "compProx": 0.0389, "diasAtraso": 15, "top3Prazo": ["1º Estrutura", "2º Terraplenagem", "3º Contenções"], "ie": 0.99, "orcInicial": 49280872.61, "orcTermino": 47801773.55, "estoqueSistema": 5150453.22, "estoqueGE": 1137992.67, "top3Custo": ["1º Folha (R$ 244k)", "2º Gás (R$ 150k)", "3º Elevador (R$ 99k)"], "plsModI": 0.1884, "proxPlsModI": null, "plsModII": 0.1295, "proxPlsModII": null}];
 const C = {green:'#1a9e4b', greenD:'#127a38', blue:'#1c8fd1', blueD:'#1167a8', warn:'#e8a317', bad:'#e23b3b', good:'#1a9e4b', grid:'#e6ebf0', muted:'#6b7785'};
 const isNil = v => v==null || (typeof v==='number' && isNaN(v));
 const pct = v => isNil(v) ? '—' : (v*100).toFixed(1).replace('.',',')+'%';
@@ -212,8 +222,12 @@ const dec = v => isNil(v) ? '—' : v.toLocaleString('pt-BR',{minimumFractionDig
 
 const fObra=document.getElementById('fObra'), fMes=document.getElementById('fMes');
 const obras=[...new Set(DATA.map(d=>d.obra))], meses=[...new Set(DATA.map(d=>d.mes))];
-fObra.innerHTML='<option value="">Todas as obras</option>'+obras.map(o=>`<option>${o}</option>`).join('');
-fMes.innerHTML='<option value="">Todos os meses</option>'+meses.map(m=>`<option>${m}</option>`).join('');
+function fillFilters(){
+  if(fObra && !fObra.options.length)
+    fObra.innerHTML='<option value="">Todas as obras</option>'+obras.map(o=>`<option>${o}</option>`).join('');
+  if(fMes && !fMes.options.length)
+    fMes.innerHTML='<option value="">Todos os meses</option>'+meses.map(m=>`<option>${m}</option>`).join('');
+}
 
 let charts={};
 function filtered(){return DATA.filter(d=>(!fObra.value||d.obra===fObra.value)&&(!fMes.value||d.mes===fMes.value));}
@@ -234,18 +248,54 @@ function renderKPIs(rows){
   const n=rows.length;
   const avg=(f)=>{const v=rows.map(r=>r[f]).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null;};
   const sum=(f)=>rows.reduce((a,r)=>a+(r[f]||0),0);
-  const suf = allObras() ? ' médio' : '';                 // "médio" só quando todas as obras
-  const idp=avg('idp'), ie=avg('ie'), av=avg('acumExecutado');
-  const dias = rows.length===1 ? rows[0].diasAtraso : null;
+  const suf = allObras() ? ' médio' : '';
+  const idp=avg('idp'), ie=avg('ie'), av=avg('acumExecutado'), avPlan=avg('acumPlanejado');
+  // Dias de atraso: valor direto se 1 obra, maior atraso se várias
+  const diasVals = rows.map(r=>r.diasAtraso).filter(x=>x!=null);
+  const diasVal = diasVals.length ? Math.max(...diasVals) : null;
+  const diasLabel = allObras() ? 'maior atraso (dias)' : 'dias de atraso';
+  const orcT=sum('orcTermino'), orcI=sum('orcInicial');
+  const desvOrc = (orcT>0&&orcI>0) ? orcT-orcI : null;
   const k=[
-    {t:'Obras',v:n,s:'no filtro atual',g:1},
+    {t:'Dias de atraso',v:diasVal==null?'—':num(diasVal),s:diasLabel,cls:diasVal==null?'':(badDias(diasVal)?'val-bad':'val-good'),g:1},
     {t:'IDP'+suf,v:dec(idp),s:'desempenho de prazo',cls: idp==null?'':(badIDP(idp)?'val-bad':'val-good')},
     {t:'IE'+suf,v:dec(ie),s:'eficiência de custo',g:1,cls: ie==null?'':(badIE(ie)?'val-bad':'val-good')},
-    {t:'Avanço'+suf,v:pct(av),s:'executado acumulado'},
-    {t:'Efetivo total',v:num(sum('efetivoDireto')+sum('efetivoIndireto')),s:'direto + indireto',g:1},
-    {t:'Orç. término',v:brl(sum('orcTermino')),s:'somatório projetado'},
+    {t:'Avanço'+suf,v:pct(av),s:'executado acumulado',cls: (av!=null&&avPlan!=null)?(av>=avPlan?'val-good':'val-bad'):''},
+    {t:'Desvio orçado',v:desvOrc==null?'—':(desvOrc>=0?'+':'')+brl(desvOrc),s:'término − inicial',
+     cls:desvOrc==null?'':(desvOrc>0?'val-bad':'val-good'),g:1},
   ];
-  document.getElementById('kpis').innerHTML=k.map(x=>`<div class="kpi ${x.g?'g':''} ${x.cls||''}"><div class="k-top">${x.t}</div><div class="k-val">${x.v}</div><div class="k-sub">${x.s}</div></div>`).join('');
+  // Mini-anel PLS — média MOD I e MOD II + próxima PLS
+  const plsVals  = rows.map(r=>r.plsModI).filter(x=>x!=null);
+  const plsVals2 = rows.map(r=>r.plsModII).filter(x=>x!=null);
+  const proxI    = rows.map(r=>r.proxPlsModI).filter(x=>x!=null);
+  const proxII   = rows.map(r=>r.proxPlsModII).filter(x=>x!=null);
+  const proxAvgI  = proxI.length  ? proxI.reduce((a,b)=>a+b,0)/proxI.length   : null;
+  const proxAvgII = proxII.length ? proxII.reduce((a,b)=>a+b,0)/proxII.length : null;
+  const plsAvg   = plsVals.length  ? plsVals.reduce((a,b)=>a+b,0)/plsVals.length   : null;
+  const plsAvg2  = plsVals2.length ? plsVals2.reduce((a,b)=>a+b,0)/plsVals2.length : null;
+  const plsPct   = plsAvg!=null  ? Math.round(plsAvg*100)  : 0;
+  const plsPct2  = plsAvg2!=null ? Math.round(plsAvg2*100) : 0;
+  const mkMini = (pp, lbl, color, mod) =>
+    `<div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+      <div style="width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+        background:conic-gradient(${color} ${pp}%,#e9eef3 0)">
+        <div style="width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#1d2733">${lbl}</div>
+      </div>
+      <span style="font-size:9px;color:#6b7785;font-weight:700;text-transform:uppercase;letter-spacing:.3px">${mod}</span>
+    </div>`;
+  const ring1 = mkMini(plsPct,  plsAvg!=null  ? pct(plsAvg)  : '—', C.green, 'MOD I');
+  const ring2 = plsAvg2!=null ? mkMini(plsPct2, pct(plsAvg2), C.blue, 'MOD II') : '';
+  // Próxima PLS abaixo dos anéis
+  const proxParts=[];
+  if(proxAvgI!=null)  proxParts.push(`<span style="color:#6b7785">Próx. MOD I:</span> <b style="color:#1d2733">${pct(proxAvgI)}</b>`);
+  if(proxAvgII!=null) proxParts.push(`<span style="color:#6b7785">Próx. MOD II:</span> <b style="color:#1d2733">${pct(proxAvgII)}</b>`);
+  const proxHtml = proxParts.length
+    ? `<div style="font-size:9.5px;margin-top:5px;line-height:1.6">${proxParts.join('<br>')}</div>`
+    : `<div style="font-size:9px;color:#9aa6b2;margin-top:4px">Próxima PLS — —</div>`;
+  const miniRing = `<div style="display:flex;justify-content:center;gap:8px;margin:4px 0 0">${ring1}${ring2}</div>${proxHtml}`;
+  const kpisHtml = k.map(x=>`<div class="kpi ${x.g?'g':''} ${x.cls||''}"><div class="k-top">${x.t}</div><div class="k-val">${x.v}</div><div class="k-sub">${x.s}</div></div>`).join('');
+  const plsKpi = `<div class="kpi g" style="text-align:center"><div class="k-top">PLS</div>${miniRing}</div>`;
+  document.getElementById('kpis').innerHTML = kpisHtml + plsKpi;
 }
 
 function mk(id,cfg){
@@ -256,8 +306,14 @@ function mk(id,cfg){
   if(charts[id])charts[id].destroy();
   try{ charts[id]=new Chart(el,cfg); }catch(e){ /* não interrompe o resto do dashboard */ }
 }
-const legend={labels:{font:{size:12},color:C.muted,usePointStyle:true,pointStyle:'circle'}};
+const legend={position:'bottom',labels:{font:{size:12},color:C.muted,usePointStyle:true,pointStyle:'circle'}};
 const DL_NUM={anchor:'end',align:'end',color:C.ink||'#1d2733',font:{weight:'700',size:11},clamp:true};
+const isMob = ()=>window.innerWidth<=600;
+// Abreviação dos nomes de obra no celular
+const shortName = n => isMob() ? n.replace('Vila ','').replace('Urban ','').replace('Candeias','Can.') : n;
+// opções do eixo X adaptadas ao tamanho da tela
+const xAxis = ()=>({ticks:{color:C.muted,maxRotation:isMob()?45:0,minRotation:isMob()?45:0,
+  font:{size:isMob()?9:12},callback:function(val,i){return shortName(this.getLabelForValue(i))}},grid:{display:false}});
 
 function renderCharts(rows){
   const lab=rows.map(r=>r.obra);
@@ -267,36 +323,48 @@ function renderCharts(rows){
     {label:'Executado',data:rows.map(r=>r.acumExecutado*100),borderRadius:6,
       backgroundColor:rows.map(r=>(r.acumExecutado!=null&&r.acumPlanejado!=null&&r.acumExecutado<r.acumPlanejado)?C.bad:C.good)}]},
     options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:22}},
-      scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%',color:C.muted},grid:{color:C.grid}},x:{ticks:{color:C.muted},grid:{display:false}}},
-      plugins:{legend,tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toFixed(2).replace('.',',')+'%'}},
-        datalabels:{...DL_NUM,formatter:v=>v.toFixed(2).replace('.',',')+'%'}}}});
+      scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%',color:C.muted,font:{size:isMob()?9:11}},grid:{color:C.grid}},x:xAxis()},
+      plugins:{legend:{...legend,labels:{...legend.labels,font:{size:isMob()?10:12}}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toFixed(2).replace('.',',')+'%'}},
+        datalabels:{...DL_NUM,font:{weight:'700',size:isMob()?8:11},formatter:v=>v.toFixed(2).replace('.',',')+'%'}}}});
 
-  // 2) Estoque — Sistema x GE (R$) — rótulos por extenso
+  // 2) Estoque — Sistema x GE (R$)
   mk('chEstoque',{type:'bar',data:{labels:lab,datasets:[
     {label:'Estoque Sistema',data:rows.map(r=>r.estoqueSistema),backgroundColor:C.blue,borderRadius:6},
     {label:'Estoque GE',data:rows.map(r=>r.estoqueGE),backgroundColor:C.greenD,borderRadius:6}]},
     options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:26}},
-      scales:{y:{beginAtZero:true,ticks:{callback:v=>'R$ '+(v/1e6).toLocaleString('pt-BR',{maximumFractionDigits:1})+'mi',color:C.muted},grid:{color:C.grid}},x:{ticks:{color:C.muted},grid:{display:false}}},
-      plugins:{legend,tooltip:{callbacks:{label:c=>c.dataset.label+': '+brlFull(c.parsed.y)}},
-        datalabels:{...DL_NUM,font:{weight:'700',size:10},formatter:v=>v==null?'':brlFull(v)}}}});
+      scales:{y:{beginAtZero:true,ticks:{callback:v=>'R$ '+(v/1e6).toLocaleString('pt-BR',{maximumFractionDigits:1})+'mi',color:C.muted,font:{size:isMob()?9:11}},grid:{color:C.grid}},x:xAxis()},
+      plugins:{legend:{...legend,labels:{...legend.labels,font:{size:isMob()?10:12}}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+brlFull(c.parsed.y)}},
+        datalabels:{...DL_NUM,font:{weight:'700',size:isMob()?7:10},formatter:v=>v==null?'':brlFull(v)}}}});
 
-  // 3) Orçamento — Inicial x Término (gráfico); Término vermelho se > inicial — rótulos por extenso
+  // 3) Orçamento — Inicial x Término — rótulo abreviado na barra, completo no tooltip
+  const orcFmt = v => v==null?'': (rows.length>1 ? 'R$'+(v/1e6).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'mi' : brlFull(v));
   mk('chOrc',{type:'bar',data:{labels:lab,datasets:[
     {label:'Orç. Inicial',data:rows.map(r=>r.orcInicial),backgroundColor:C.blue,borderRadius:6},
     {label:'Orç. Término',data:rows.map(r=>r.orcTermino),borderRadius:6,
       backgroundColor:rows.map(r=>badOrc(r)?C.bad:C.good)}]},
     options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:26}},
-      scales:{y:{beginAtZero:true,ticks:{callback:v=>'R$ '+(v/1e6).toLocaleString('pt-BR',{maximumFractionDigits:1})+'mi',color:C.muted},grid:{color:C.grid}},x:{ticks:{color:C.muted},grid:{display:false}}},
-      plugins:{legend,tooltip:{callbacks:{label:c=>c.dataset.label+': '+brlFull(c.parsed.y)}},
-        datalabels:{...DL_NUM,font:{weight:'700',size:10},formatter:v=>v==null?'':brlFull(v)}}}});
+      scales:{y:{beginAtZero:true,ticks:{callback:v=>'R$ '+(v/1e6).toLocaleString('pt-BR',{maximumFractionDigits:1})+'mi',color:C.muted,font:{size:isMob()?9:11}},grid:{color:C.grid}},x:xAxis()},
+      plugins:{legend:{...legend,labels:{...legend.labels,font:{size:isMob()?10:12}}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+brlFull(c.parsed.y)}},
+        datalabels:{...DL_NUM,font:{weight:'700',size:isMob()?7:10},formatter:orcFmt}}}});
 
-  // 4) Mão de obra — empilhado com rótulos
+  // 4) Mão de obra — empilhado + total acima de cada coluna
+  const moTotal = rows.map(r=>(r.efetivoDireto||0)+(r.efetivoIndireto||0));
   mk('chMO',{type:'bar',data:{labels:lab,datasets:[
-    {label:'Efetivo Direto',data:rows.map(r=>r.efetivoDireto),backgroundColor:C.green,borderRadius:6},
-    {label:'Efetivo Indireto',data:rows.map(r=>r.efetivoIndireto),backgroundColor:C.blue,borderRadius:6}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      scales:{x:{stacked:true,ticks:{color:C.muted},grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{color:C.muted},grid:{color:C.grid}}},
-      plugins:{legend,datalabels:{color:'#fff',font:{weight:'700',size:11},formatter:v=>v>0?v:''}}}});
+    {label:'Efetivo Direto',data:rows.map(r=>r.efetivoDireto),backgroundColor:C.green,borderRadius:6,stack:'s'},
+    {label:'Efetivo Indireto',data:rows.map(r=>r.efetivoIndireto),backgroundColor:C.blue,borderRadius:0,stack:'s'},
+    // dataset fantasma só para exibir o total no topo
+    {label:'Total',data:moTotal,backgroundColor:'rgba(0,0,0,0)',stack:'s',
+      datalabels:{anchor:'end',align:'end',color:C.ink||'#1d2733',font:{weight:'800',size:isMob()?9:12},
+        formatter:v=>v>0?'Total: '+v:''}}]},
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:28}},
+      scales:{x:{stacked:true,...xAxis()},y:{stacked:true,beginAtZero:true,ticks:{color:C.muted,font:{size:isMob()?9:11}},grid:{color:C.grid}}},
+      plugins:{legend:{...legend,labels:{...legend.labels,font:{size:isMob()?10:12},
+        filter:item=>item.text!=='Total'}}, // esconde "Total" da legenda
+        datalabels:{color:'#fff',font:{weight:'700',size:isMob()?9:11},
+          formatter:(v,ctx)=>ctx.dataset.label==='Total'?'':v>0?v:''}}}})
 }
 
 
@@ -347,12 +415,12 @@ function renderDevios(rows){
 }
 
 function render(){
+  fillFilters();
   const rows=filtered();
   document.getElementById('stampMes').textContent=fMes.value||(meses.length===1?meses[0]:'Todos os meses');
   document.getElementById('stampObra').textContent=fObra.value||'Todas as obras';
   // Dados que NÃO dependem de gráfico — sempre renderizam (KPIs, PLS, tabela, desvios)
   try{ renderKPIs(rows); }catch(e){}
-  try{ renderPLS(rows); }catch(e){}
   try{ renderTable(rows); }catch(e){}
   try{ renderDevios(rows); }catch(e){}
   // Detalhamento só quando todas as obras
@@ -373,7 +441,7 @@ function boot(){
       try{ if(window.ChartDataLabels && !Chart.registry.plugins.get('datalabels')) Chart.register(window.ChartDataLabels); }catch(e){}
       render();                       // render completo (com gráficos)
     }else if(tries++ < 40){
-      if(tries===1) render();         // mostra dados já na 1ª tentativa, sem esperar o Chart
+    if(tries===1) render();         // mostra dados já na 1ª tentativa, sem esperar o Chart
       setTimeout(waitChart,100);      // tenta o Chart por até ~4s
     }else{
       render();                       // desiste do Chart mas garante os dados
@@ -382,6 +450,8 @@ function boot(){
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
 else boot();
+// Re-renderiza gráficos ao girar o celular ou redimensionar
+let _rz; window.addEventListener('resize',()=>{clearTimeout(_rz);_rz=setTimeout(()=>{ try{renderCharts(filtered());}catch(e){} },250);});
 
 </script>
 </body>
