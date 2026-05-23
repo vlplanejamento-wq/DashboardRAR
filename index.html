@@ -35,7 +35,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',-apple-system,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
-.wrap{max-width:1320px;margin:0 auto;padding:22px 22px 60px}
+.wrap{max-width:1320px;margin:0 auto;padding:22px 22px 60px;overflow-x:hidden}
 .topbar{background:var(--card);border-radius:16px;padding:18px 26px;display:flex;align-items:center;gap:24px;
   box-shadow:0 4px 18px rgba(28,45,67,.06);border:1px solid var(--line);position:relative;overflow:hidden}
 .topbar::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;
@@ -67,13 +67,13 @@ body{font-family:'Segoe UI',-apple-system,Roboto,Helvetica,Arial,sans-serif;back
   background:radial-gradient(circle,rgba(28,143,209,.10),transparent 70%)}
 .kpi.g::after{background:radial-gradient(circle,rgba(26,158,75,.12),transparent 70%)}
 .kpi.val-bad .k-val{color:var(--bad)} .kpi.val-good .k-val{color:var(--good)}
-.grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+.grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;min-width:0}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;
-  box-shadow:0 2px 14px rgba(28,45,67,.05)}
+  box-shadow:0 2px 14px rgba(28,45,67,.05);min-width:0;overflow:hidden}
 .card h2{font-size:15px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:9px}
 .card h2::before{content:"";width:5px;height:18px;border-radius:3px;background:linear-gradient(var(--vl-green),var(--vl-blue))}
 .card .hint{font-size:12px;color:var(--muted);margin-bottom:16px}
-.chartbox{position:relative;height:300px}
+.chartbox{position:relative;height:300px;width:100%;min-width:0}
 .full{grid-column:1/-1}
 .hidden{display:none!important}
 table{width:100%;border-collapse:collapse;font-size:13px}
@@ -124,11 +124,12 @@ tr:hover td{background:#f8fbfe}
   .kpis{grid-template-columns:repeat(2,1fr)}
   .topbar{flex-wrap:wrap}
   .balloon{width:calc(50% - 8px)}
-  .chartbox{height:210px}
-  .card{padding:14px 10px}
+  .chartbox{height:240px;max-width:100%}
+  .card{padding:12px 8px;min-width:0}
   .card h2{font-size:13px}
   .card .hint{font-size:11px;margin-bottom:10px}
-  .wrap{padding:12px 10px 40px}
+  .wrap{padding:8px 8px 40px;overflow-x:hidden}
+  .grid{gap:10px}
   .filters{gap:8px}
   .filter{min-width:0;flex:1}
   .kpi .k-val{font-size:20px}
@@ -136,6 +137,7 @@ tr:hover td{background:#f8fbfe}
   .ring{width:76px;height:76px}
   .ring .inner{width:58px;height:58px}
   .ring .inner span{font-size:14px}
+  canvas{max-width:100%!important}
 }
 </style>
 </head>
@@ -440,6 +442,9 @@ function boot(){
     if(typeof Chart!=='undefined'){
       try{ if(window.ChartDataLabels && !Chart.registry.plugins.get('datalabels')) Chart.register(window.ChartDataLabels); }catch(e){}
       render();                       // render completo (com gráficos)
+      // Força recálculo das dimensões após layout estabilizar (crítico no Safari mobile)
+      setTimeout(()=>{ try{renderCharts(filtered());}catch(e){} }, 300);
+      setTimeout(()=>{ try{renderCharts(filtered());}catch(e){} }, 800);
     }else if(tries++ < 40){
     if(tries===1) render();         // mostra dados já na 1ª tentativa, sem esperar o Chart
       setTimeout(waitChart,100);      // tenta o Chart por até ~4s
