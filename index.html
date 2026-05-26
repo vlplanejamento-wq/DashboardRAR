@@ -151,6 +151,9 @@ tr:hover td{background:#f8fbfe}
     </div>
     <div class="spacer"></div>
     <div class="stamp">Período de referência<br><b id="stampMes">—</b><br><span id="stampObra">Todas as obras</span></div>
+    <div class="stamp" id="stampReplan" style="border-left:1px solid var(--line);padding-left:18px;display:none">
+      Replanejamentos<br><b id="stampReplanNum">—</b><br><span id="stampReplanData" style="font-size:11px">—</span>
+    </div>
   </header>
 
   <section class="filters">
@@ -184,6 +187,11 @@ tr:hover td{background:#f8fbfe}
       <div class="chartbox"><canvas id="chOrc"></canvas></div>
     </div>
 
+    <div class="card full" id="cardReplan">
+      <h2>Replanejamentos</h2>
+      <div class="pls-wrap" id="replanWrap"></div>
+    </div>
+
     <div class="card full" id="cardTabela">
       <h2>Detalhamento por Obra</h2>
       <div class="hint">Visível quando o filtro de obra está em “Todas as obras”</div>
@@ -213,7 +221,7 @@ tr:hover td{background:#f8fbfe}
 </div>
 
 <script>
-const DATA = [{"obra": "Vila Novo Curado", "mes": "Abril", "efetivoDireto": 55, "efetivoIndireto": 15, "idp": 0.92, "acumPlanejado": 1.0, "acumExecutado": 0.9209, "compMes": 0.0179, "execMes": 0.0118, "compProx": 0.0238, "diasAtraso": 122, "top3Prazo": ["1º Serralharia infra", "2º Paisagismo", "3º Pintura"], "ie": 1.21, "orcInicial": 29107104.03, "orcTermino": 35219775.84, "estoqueSistema": null, "estoqueGE": 824926.6, "top3Custo": ["1º Folha (R$ 4,4mi)", "2º Aquisição e locação (R$ 1mi)", "3º Contenção (R$ 747k)"], "plsModI": 0.95, "proxPlsModI": null, "plsModII": 0.9134, "proxPlsModII": 0.0125}, {"obra": "Vila Paraíso", "mes": "Abril", "efetivoDireto": 64, "efetivoIndireto": 18, "idp": 1.0, "acumPlanejado": 0.3934, "acumExecutado": 0.3934, "compMes": 0.0429, "execMes": 0.0155, "compProx": 0.0327, "diasAtraso": 0, "top3Prazo": ["1º Estrutura", "2º Rede de alta", "3º Infra incêndio"], "ie": 1.05, "orcInicial": 50687870.98, "orcTermino": 52006360.62, "estoqueSistema": 4414131.43, "estoqueGE": 1262475.51, "top3Custo": ["1º Consumo (R$ 572k)", "2º Folha (R$ 362k)", "3º Estrutura - Parede (R$ 301k)"], "plsModI": 0.4636, "proxPlsModI": 0.0145, "plsModII": 0.274, "proxPlsModII": 0.0363}, {"obra": "Urban Candeias", "mes": "Abril", "efetivoDireto": 48, "efetivoIndireto": 10, "idp": 0.99, "acumPlanejado": 0.5203, "acumExecutado": 0.5169, "compMes": 0.0599, "execMes": 0.0578, "compProx": 0.0696, "diasAtraso": 1, "top3Prazo": ["1º Base ETE", "2º Emboço de fachada", "3º Coberta"], "ie": 1.08, "orcInicial": 23820928.86, "orcTermino": 25021361.39, "estoqueSistema": 4572015.44, "estoqueGE": 529469.369, "top3Custo": ["1º Folha (R$ 278k)", "2º Revestimento de piso (R$273k)", "3º  Aquisição e locação (R$256k)"], "plsModI": 0.5494, "proxPlsModI": null, "plsModII": null, "proxPlsModII": null}, {"obra": "Vila Gonzaga", "mes": "Abril", "efetivoDireto": 52, "efetivoIndireto": 12, "idp": 0.92, "acumPlanejado": 0.1586, "acumExecutado": 0.146, "compMes": 0.0496, "execMes": 0.038, "compProx": 0.0389, "diasAtraso": 15, "top3Prazo": ["1º Estrutura", "2º Terraplenagem", "3º Contenções"], "ie": 0.99, "orcInicial": 49280872.61, "orcTermino": 47801773.55, "estoqueSistema": 5150453.22, "estoqueGE": 1137992.67, "top3Custo": ["1º Folha (R$ 244k)", "2º Gás (R$ 150k)", "3º Elevador (R$ 99k)"], "plsModI": 0.1884, "proxPlsModI": null, "plsModII": 0.1295, "proxPlsModII": null}];
+const DATA = [{"obra": "Vila Novo Curado", "mes": "Abril", "efetivoDireto": 55, "efetivoIndireto": 15, "idp": 0.92, "nReplanejamentos": 2, "dataUltimoReplan": "01/06/2025", "acumPlanejado": 1.0, "acumExecutado": 0.9209, "compMes": 0.0179, "execMes": 0.0118, "compProx": 0.0238, "diasAtraso": 122, "top3Prazo": ["1º Serralharia infra", "2º Paisagismo", "3º Pintura"], "ie": 1.21, "orcInicial": 29107104.03, "orcTermino": 35219775.84, "estoqueSistema": 2103186.58, "estoqueGE": 824926.6, "top3Custo": ["1º Folha (R$ 4,4mi)", "2º Aquisição e locação (R$ 1mi)", "3º Contenção (R$ 747k)"], "plsModI": 0.95, "proxPlsModI": null, "plsModII": 0.9134, "proxPlsModII": 0.0125}, {"obra": "Vila Paraíso", "mes": "Abril", "efetivoDireto": 64, "efetivoIndireto": 18, "idp": 1.0, "nReplanejamentos": 2, "dataUltimoReplan": "01/05/2026", "acumPlanejado": 0.3934, "acumExecutado": 0.3934, "compMes": 0.0429, "execMes": 0.0155, "compProx": 0.0327, "diasAtraso": 0, "top3Prazo": ["1º Estrutura", "2º Rede de alta", "3º Infra incêndio"], "ie": 1.05, "orcInicial": 50687870.98, "orcTermino": 52006360.62, "estoqueSistema": 4414131.43, "estoqueGE": 1262475.51, "top3Custo": ["1º Consumo (R$ 572k)", "2º Folha (R$ 362k)", "3º Estrutura - Parede (R$ 301k)"], "plsModI": 0.4636, "proxPlsModI": 0.0145, "plsModII": 0.274, "proxPlsModII": 0.0363}, {"obra": "Urban Candeias", "mes": "Abril", "efetivoDireto": 48, "efetivoIndireto": 10, "idp": 0.99, "nReplanejamentos": 2, "dataUltimoReplan": "01/03/2026", "acumPlanejado": 0.5203, "acumExecutado": 0.5169, "compMes": 0.0599, "execMes": 0.0578, "compProx": 0.0696, "diasAtraso": 1, "top3Prazo": ["1º Base ETE", "2º Emboço de fachada", "3º Coberta"], "ie": 1.08, "orcInicial": 23820928.86, "orcTermino": 25021361.39, "estoqueSistema": 4572015.44, "estoqueGE": 529469.369, "top3Custo": ["1º Folha (R$ 278k)", "2º Revestimento de piso (R$273k)", "3º  Aquisição e locação (R$256k)"], "plsModI": 0.5494, "proxPlsModI": null, "plsModII": null, "proxPlsModII": null}, {"obra": "Vila Gonzaga", "mes": "Abril", "efetivoDireto": 52, "efetivoIndireto": 12, "idp": 0.92, "nReplanejamentos": 1, "dataUltimoReplan": "01/01/2026", "acumPlanejado": 0.1586, "acumExecutado": 0.146, "compMes": 0.0496, "execMes": 0.038, "compProx": 0.0389, "diasAtraso": 15, "top3Prazo": ["1º Estrutura", "2º Terraplenagem", "3º Contenções"], "ie": 0.99, "orcInicial": 49280872.61, "orcTermino": 47801773.55, "estoqueSistema": 5150453.22, "estoqueGE": 1137992.67, "top3Custo": ["1º Folha (R$ 244k)", "2º Gás (R$ 150k)", "3º Elevador (R$ 99k)"], "plsModI": 0.1884, "proxPlsModI": null, "plsModII": 0.1295, "proxPlsModII": null}];
 const C = {green:'#1a9e4b', greenD:'#127a38', blue:'#1c8fd1', blueD:'#1167a8', warn:'#e8a317', bad:'#e23b3b', good:'#1a9e4b', grid:'#e6ebf0', muted:'#6b7785'};
 const isNil = v => v==null || (typeof v==='number' && isNaN(v));
 const pct = v => isNil(v) ? '—' : (v*100).toFixed(1).replace('.',',')+'%';
@@ -296,7 +304,7 @@ function renderKPIs(rows){
     : `<div style="font-size:9px;color:#9aa6b2;margin-top:4px">Próxima PLS — —</div>`;
   const miniRing = `<div style="display:flex;justify-content:center;gap:8px;margin:4px 0 0">${ring1}${ring2}</div>${proxHtml}`;
   const kpisHtml = k.map(x=>`<div class="kpi ${x.g?'g':''} ${x.cls||''}"><div class="k-top">${x.t}</div><div class="k-val">${x.v}</div><div class="k-sub">${x.s}</div></div>`).join('');
-  const plsKpi = `<div class="kpi g" style="text-align:center"><div class="k-top">PLS</div>${miniRing}</div>`;
+  const plsKpi = allObras() ? '' : `<div class="kpi g" style="text-align:center"><div class="k-top">PLS</div>${miniRing}</div>`;
   document.getElementById('kpis').innerHTML = kpisHtml + plsKpi;
 }
 
@@ -408,6 +416,25 @@ function renderTable(rows){
   }).join('');
 }
 
+function renderReplan(rows){
+  const wrap = document.getElementById('replanWrap'); if(!wrap) return;
+  wrap.innerHTML = rows.map(d=>{
+    const nr = d.nReplanejamentos!=null ? d.nReplanejamentos : '—';
+    const dt = d.dataUltimoReplan || '—';
+    // cor: 0 = verde, 1 = amarelo, 2+ = vermelho
+    const col = nr===0||nr==='—' ? 'var(--good)' : nr===1 ? 'var(--warn)' : 'var(--bad)';
+    return `<div class="balloon">
+      <div class="b-obra">${d.obra}</div>
+      <div style="font-size:36px;font-weight:800;color:${col};margin:8px 0 4px;line-height:1">${nr}</div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)">replanejamento${nr!==1?'s':''}</div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">
+        <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px">Último replanejamento</div>
+        <div style="font-size:14px;font-weight:700;color:var(--ink);margin-top:3px">${dt}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function renderDevios(rows){
   const li=arr=>arr&&arr.length?arr.map((x,i)=>`<li><span class="rank">${i+1}</span>${x.replace(/^\d+º\s*/,'')}</li>`).join(''):'<li class="empty">Selecione uma única obra para ver os desvios</li>';
   let p=[],c=[];
@@ -421,12 +448,25 @@ function render(){
   const rows=filtered();
   document.getElementById('stampMes').textContent=fMes.value||(meses.length===1?meses[0]:'Todos os meses');
   document.getElementById('stampObra').textContent=fObra.value||'Todas as obras';
+  // Stamp de replanejamentos — só quando uma obra está selecionada
+  const sReplan = document.getElementById('stampReplan');
+  if(!allObras() && rows.length===1){
+    const nr = rows[0].nReplanejamentos;
+    const col = nr===0 ? 'var(--good)' : nr===1 ? 'var(--warn)' : 'var(--bad)';
+    document.getElementById('stampReplanNum').innerHTML = `<span style="color:${col}">${nr!=null?nr:'—'} replanejamento${nr!==1?'s':''}</span>`;
+    document.getElementById('stampReplanData').textContent = rows[0].dataUltimoReplan || '—';
+    sReplan.style.display='block';
+  } else {
+    sReplan.style.display='none';
+  }
   // Dados que NÃO dependem de gráfico — sempre renderizam (KPIs, PLS, tabela, desvios)
   try{ renderKPIs(rows); }catch(e){}
+  try{ renderReplan(rows); }catch(e){}
   try{ renderTable(rows); }catch(e){}
   try{ renderDevios(rows); }catch(e){}
   // Detalhamento só quando todas as obras
   document.getElementById('cardTabela').classList.toggle('hidden', !allObras());
+  document.getElementById('cardReplan').classList.toggle('hidden', !allObras());
   // Gráficos (dependem do Chart.js; protegidos individualmente)
   try{ renderCharts(rows); }catch(e){}
 }
