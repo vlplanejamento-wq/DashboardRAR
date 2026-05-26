@@ -150,9 +150,13 @@ tr:hover td{background:#f8fbfe}
       <p>Acompanhamento de prazo, custo, mão de obra e PLS</p>
     </div>
     <div class="spacer"></div>
-    <div class="stamp">Período de referência<br><b id="stampMes">—</b><br><span id="stampObra">Todas as obras</span></div>
-    <div class="stamp" id="stampReplan" style="border-left:1px solid var(--line);padding-left:18px;display:none">
-      Replanejamentos<br><b id="stampReplanNum">—</b><br><span id="stampReplanData" style="font-size:11px">—</span>
+    <div class="stamp" style="text-align:right">
+      Período de referência<br><b id="stampMes">—</b><br>
+      <span id="stampObra">Todas as obras</span>
+      <span id="stampReplan" style="display:none"><br>
+        <b id="stampReplanNum" style="font-size:13px">—</b><br>
+        <span id="stampReplanData" style="font-size:11px">—</span>
+      </span>
     </div>
   </header>
 
@@ -453,9 +457,11 @@ function render(){
   if(!allObras() && rows.length===1){
     const nr = rows[0].nReplanejamentos;
     const col = nr===0 ? 'var(--good)' : nr===1 ? 'var(--warn)' : 'var(--bad)';
-    document.getElementById('stampReplanNum').innerHTML = `<span style="color:${col}">${nr!=null?nr:'—'} replanejamento${nr!==1?'s':''}</span>`;
-    document.getElementById('stampReplanData').textContent = rows[0].dataUltimoReplan || '—';
-    sReplan.style.display='block';
+    document.getElementById('stampReplanNum').innerHTML =
+      `<span style="color:${col}">${nr!=null?nr:'—'} replanejamento${nr!==1?'s':''}</span>`;
+    document.getElementById('stampReplanData').textContent =
+      rows[0].dataUltimoReplan ? 'Último: '+rows[0].dataUltimoReplan : '—';
+    sReplan.style.display='inline';
   } else {
     sReplan.style.display='none';
   }
