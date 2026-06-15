@@ -230,15 +230,119 @@ tr:hover td{background:#f8fbfe}
 <script>
 const DATA = [
   // ── ABRIL 2026 ──────────────────────────────────────────────────────────────
-  {"obra":"Vila Novo Curado","mes":"Abril","efetivoDireto":55,"efetivoIndireto":15,"idp":0.92,"nReplanejamentos":2,"dataUltimoReplan":"01/06/2025","acumPlanejado":1,"acumExecutado":0.9209,"compMes":0.0179,"execMes":0.0118,"compProx":0.0238,"diasAtraso":122,"top3Prazo":["1º Serralharia infra","2º Paisagismo","3º Pintura"],"ie":1.21,"desvioMes":null,"desvioAcumulado":6147663.03,"orcInicial":29107104.03,"orcTermino":35219775.84,"estoqueSistema":2103186.58,"estoqueGE":824926.6,"top3CustoMensal":null,"top3Custo":["1º Folha (R$ 4,4mi)","2º Aquisição e locação (R$ 1mi)","3º Contenção (R$ 747k)"],"plsModI":0.95,"proxPlsModI":null,"plsModII":0.9134,"proxPlsModII":0.0125},
-  {"obra":"Vila Paraíso","mes":"Abril","efetivoDireto":64,"efetivoIndireto":18,"idp":1,"nReplanejamentos":2,"dataUltimoReplan":"01/05/2026","acumPlanejado":0.3934,"acumExecutado":0.3934,"compMes":0.0429,"execMes":0.0155,"compProx":0.0327,"diasAtraso":0,"top3Prazo":["1º Estrutura","2º Rede de alta","3º Infra incêndio"],"ie":1.05,"desvioMes":null,"desvioAcumulado":1318489.63,"orcInicial":50687870.98,"orcTermino":52006360.62,"estoqueSistema":4414131.43,"estoqueGE":1262475.51,"top3CustoMensal":null,"top3Custo":["1º Consumo (R$ 572k)","2º Folha (R$ 362k)","3º Estrutura - Parede (R$ 301k)"],"plsModI":0.4636,"proxPlsModI":0.0145,"plsModII":0.274,"proxPlsModII":0.0363},
-  {"obra":"Urban Candeias","mes":"Abril","efetivoDireto":48,"efetivoIndireto":10,"idp":0.99,"nReplanejamentos":2,"dataUltimoReplan":"01/03/2026","acumPlanejado":0.5203,"acumExecutado":0.5169,"compMes":0.0599,"execMes":0.0578,"compProx":0.0696,"diasAtraso":1,"top3Prazo":["1º Base ETE","2º Emboço de fachada","3º Coberta"],"ie":1.08,"desvioMes":null,"desvioAcumulado":1200432.53,"orcInicial":23820928.86,"orcTermino":25021361.39,"estoqueSistema":4572015.44,"estoqueGE":529469.369,"top3CustoMensal":null,"top3Custo":["1º Folha (R$ 278k)","2º Revestimento de piso (R$273k)","3º  Aquisição e locação (R$256k)"],"plsModI":0.5494,"proxPlsModI":0.0366,"plsModII":null,"proxPlsModII":null},
-  {"obra":"Vila Gonzaga","mes":"Abril","efetivoDireto":52,"efetivoIndireto":12,"idp":0.92,"nReplanejamentos":1,"dataUltimoReplan":"01/01/2026","acumPlanejado":0.1586,"acumExecutado":0.146,"compMes":0.0496,"execMes":0.038,"compProx":0.0389,"diasAtraso":15,"top3Prazo":["1º Estrutura","2º Terraplenagem","3º Contenções"],"ie":0.99,"desvioMes":null,"desvioAcumulado":-13415.75,"orcInicial":47815185.3,"orcTermino":47801773.55,"estoqueSistema":5150453.22,"estoqueGE":1137992.67,"top3CustoMensal":null,"top3Custo":["1º Folha (R$ 244k)","2º Gás (R$ 150k)","3º Elevador (R$ 99k)"],"plsModI":0.2432,"proxPlsModI":0.0535,"plsModII":0.1357,"proxPlsModII":0.0063},
+  {
+    "obra":"Vila Novo Curado","mes":"Abril","efetivoDireto":55,"efetivoIndireto":15,
+    "idp":0.92,"nReplanejamentos":2,"dataUltimoReplan":"01/06/2025",
+    "acumPlanejado":1,"acumExecutado":0.9209,
+    "compMes":0.0179,"execMes":0.0118,"compProx":0.0238,
+    "diasAtraso":122,
+    "top3Prazo":["1º Serralharia infra","2º Paisagismo","3º Pintura"],
+    "ie":1.21,"desvioMes":null,"desvioAcumulado":6147663.03,
+    "orcInicial":29107104.03,"orcTermino":35219775.84,
+    "estoqueSistema":2103186.58,"estoqueGE":824926.6,
+    "top3CustoMensal":null,
+    "top3Custo":["1º Folha (R$ 4,4mi)","2º Aquisição e locação (R$ 1mi)","3º Contenção (R$ 747k)"],
+    "plsModI":0.95,"proxPlsModI":null,"plsModII":0.9134,"proxPlsModII":0.0125
+  },
+  {
+    "obra":"Vila Paraíso","mes":"Abril","efetivoDireto":64,"efetivoIndireto":18,
+    "idp":1,"nReplanejamentos":2,"dataUltimoReplan":"01/05/2026",
+    "acumPlanejado":0.3934,"acumExecutado":0.3934,
+    "compMes":0.0429,"execMes":0.0155,"compProx":0.0327,
+    "diasAtraso":0,
+    "top3Prazo":["1º Estrutura","2º Rede de alta","3º Infra incêndio"],
+    "ie":1.05,"desvioMes":null,"desvioAcumulado":1318489.63,
+    "orcInicial":50687870.98,"orcTermino":52006360.62,
+    "estoqueSistema":4414131.43,"estoqueGE":1262475.51,
+    "top3CustoMensal":null,
+    "top3Custo":["1º Consumo (R$ 572k)","2º Folha (R$ 362k)","3º Estrutura - Parede (R$ 301k)"],
+    "plsModI":0.4636,"proxPlsModI":null,"plsModII":0.274,"proxPlsModII":null
+  },
+  {
+    "obra":"Urban Candeias","mes":"Abril","efetivoDireto":48,"efetivoIndireto":10,
+    "idp":0.99,"nReplanejamentos":2,"dataUltimoReplan":"01/03/2026",
+    "acumPlanejado":0.5203,"acumExecutado":0.5169,
+    "compMes":0.0599,"execMes":0.0578,"compProx":0.0696,
+    "diasAtraso":1,
+    "top3Prazo":["1º Base ETE","2º Emboço de fachada","3º Coberta"],
+    "ie":1.08,"desvioMes":null,"desvioAcumulado":1200432.53,
+    "orcInicial":23820928.86,"orcTermino":25021361.39,
+    "estoqueSistema":4572015.44,"estoqueGE":529469.369,
+    "top3CustoMensal":null,
+    "top3Custo":["1º Folha (R$ 278k)","2º Revestimento de piso (R$273k)","3º Aquisição e locação (R$256k)"],
+    "plsModI":0.5494,"proxPlsModI":null,"plsModII":null,"proxPlsModII":null
+  },
+  {
+    "obra":"Vila Gonzaga","mes":"Abril","efetivoDireto":52,"efetivoIndireto":12,
+    "idp":0.92,"nReplanejamentos":1,"dataUltimoReplan":"01/01/2026",
+    "acumPlanejado":0.1586,"acumExecutado":0.146,
+    "compMes":0.0496,"execMes":0.038,"compProx":0.0389,
+    "diasAtraso":15,
+    "top3Prazo":["1º Estrutura","2º Terraplenagem","3º Contenções"],
+    "ie":0.99,"desvioMes":null,"desvioAcumulado":-13415.75,
+    "orcInicial":47815185.3,"orcTermino":47801773.55,
+    "estoqueSistema":5150453.22,"estoqueGE":1137992.67,
+    "top3CustoMensal":null,
+    "top3Custo":["1º Folha (R$ 244k)","2º Gás (R$ 150k)","3º Elevador (R$ 99k)"],
+    "plsModI":0.2432,"proxPlsModI":null,"plsModII":0.1357,"proxPlsModII":null
+  },
   // ── MAIO 2026 ───────────────────────────────────────────────────────────────
-  {"obra":"Vila Novo Curado","mes":"Maio","efetivoDireto":55,"efetivoIndireto":12,"idp":0.94,"nReplanejamentos":2,"dataUltimoReplan":"01/06/2025","acumPlanejado":1,"acumExecutado":0.9363,"compMes":0.0238,"execMes":0.0152,"compProx":0.0254,"diasAtraso":128,"top3Prazo":["1º Serralharia infra","2º Instalação de bombas","3º Pintura"],"ie":1.24,"desvioMes":341350.74,"desvioAcumulado":6489013.78,"orcInicial":29107104.03,"orcTermino":35595201.38,"estoqueSistema":2147677.84,"estoqueGE":1050289.48,"top3CustoMensal":["1º Esquadria de ferro - R$ 134k","2º Folha - R$ 60k","3º Pavimentação - R$ 55k"],"top3Custo":["1º Folha - R$ 4,48 mi","2º Aquisição e locação - R$ 1 mi","3º Muro de contenção - R$ 778k"],"plsModI":0.95,"proxPlsModI":null,"plsModII":0.9316,"proxPlsModII":0.0184},
-  {"obra":"Vila Paraíso","mes":"Maio","efetivoDireto":64,"efetivoIndireto":18,"idp":1,"nReplanejamentos":2,"dataUltimoReplan":"01/05/2026","acumPlanejado":0.4258,"acumExecutado":0.4248,"compMes":0.0327,"execMes":0.0313,"compProx":0.0332,"diasAtraso":0,"top3Prazo":["1º Estrutura","2º Infra elétrica","3º Contrapiso"],"ie":1.09,"desvioMes":957962.05,"desvioAcumulado":2425858.29,"orcInicial":50687870.98,"orcTermino":53117187.86,"estoqueSistema":4951073.73,"estoqueGE":1357921.89,"top3CustoMensal":["1º Folha - R$ 870k","2º Instalações elétricas - R$ 148k","3º Consumos - R$ 41k"],"top3Custo":["1º Radier - R$ 2.1 mi","2º Pintura - R$ 1.27 mi","3º Folha - R$ 1.23 mi"],"plsModI":0.4737,"proxPlsModI":0.0697,"plsModII":0.2938,"proxPlsModII":0.0178},
-  {"obra":"Urban Candeias","mes":"Maio","efetivoDireto":48,"efetivoIndireto":10,"idp":0.93,"nReplanejamentos":2,"dataUltimoReplan":"01/03/2026","acumPlanejado":0.5946,"acumExecutado":0.5376,"compMes":0.0772,"execMes":0.0209,"compProx":0.0826,"diasAtraso":21,"top3Prazo":["1º Emboço de fachada","2º Coberta","3º Cerâmica"],"ie":1.07,"desvioMes":-17755.42546395358,"desvioAcumulado":1182677.1,"orcInicial":23820928.86,"orcTermino":25005886.87,"estoqueSistema":5174470.76,"estoqueGE":542401.769,"top3CustoMensal":["1º Folha - R$ 138k","2º Revestimento de parede - R$ 117k","3º Consumos gerais - R$ 37k"],"top3Custo":["1º Folha - R$ 453k","2º Aquisição e locação - R$ 283k","3º Revestimento de piso - R$ 272k"],"plsModI":0.6004,"proxPlsModI":0.0703,"plsModII":null,"proxPlsModII":null},
-  {"obra":"Vila Gonzaga","mes":"Maio","efetivoDireto":52,"efetivoIndireto":12,"idp":0.85,"nReplanejamentos":1,"dataUltimoReplan":"01/01/2026","acumPlanejado":0.212,"acumExecutado":0.1806,"compMes":0.0389,"execMes":0.0358,"compProx":0.0446,"diasAtraso":10,"top3Prazo":["1º Estrutura","2º Terraplenagem","3º Instalações de infra"],"ie":1,"desvioMes":76708.21,"desvioAcumulado":63296.45,"orcInicial":47815185.3,"orcTermino":47878196.16,"estoqueSistema":6175789.07,"estoqueGE":1374603.24,"top3CustoMensal":["1º Ajuste de forma - R$ 60k","2º Folha forma - R$ 24k","3º Canteiro - R$ 19k"],"top3Custo":["1º Forma Folha -R$ 268k","2º Instalações gás - R$ 150k","3º Ajuste de forma - R$ 128k"],"plsModI":0.1884,"proxPlsModI":0.0201,"plsModII":0.1295,"proxPlsModII":0.066}
+  {
+    "obra":"Vila Novo Curado","mes":"Maio","efetivoDireto":55,"efetivoIndireto":12,
+    "idp":0.94,"nReplanejamentos":2,"dataUltimoReplan":"01/06/2025",
+    "acumPlanejado":1,"acumExecutado":0.9363,
+    "compMes":0.0238,"execMes":0.0152,"compProx":0.0254,
+    "diasAtraso":128,
+    "top3Prazo":["1º Serralharia infra","2º Instalação de bombas","3º Pintura"],
+    "ie":1.24,"desvioMes":341350.74,"desvioAcumulado":6489013.78,
+    "orcInicial":29107104.03,"orcTermino":35595201.38,
+    "estoqueSistema":2147677.84,"estoqueGE":1050289.48,
+    "top3CustoMensal":["1º Esquadria de ferro - R$ 134k","2º Folha - R$ 60k","3º Pavimentação - R$ 55k"],
+    "top3Custo":["1º Folha - R$ 4,48 mi","2º Aquisição e locação - R$ 1 mi","3º Muro de contenção - R$ 778k"],
+    "plsModI":0.95,"proxPlsModI":null,"plsModII":0.9316,"proxPlsModII":null
+  },
+  {
+    "obra":"Vila Paraíso","mes":"Maio","efetivoDireto":64,"efetivoIndireto":18,
+    "idp":1,"nReplanejamentos":2,"dataUltimoReplan":"01/05/2026",
+    "acumPlanejado":0.4258,"acumExecutado":0.4248,
+    "compMes":0.0327,"execMes":0.0313,"compProx":0.0332,
+    "diasAtraso":0,
+    "top3Prazo":["1º Estrutura","2º Infra elétrica","3º Contrapiso"],
+    "ie":1.09,"desvioMes":957962.05,"desvioAcumulado":2425858.29,
+    "orcInicial":50687870.98,"orcTermino":53117187.86,
+    "estoqueSistema":4951073.73,"estoqueGE":1357921.89,
+    "top3CustoMensal":["1º Folha - R$ 870k","2º Instalações elétricas - R$ 148k","3º Consumos - R$ 41k"],
+    "top3Custo":["1º Radier - R$ 2.1 mi","2º Pintura - R$ 1.27 mi","3º Folha - R$ 1.23 mi"],
+    "plsModI":0.4737,"proxPlsModI":null,"plsModII":0.2938,"proxPlsModII":null
+  },
+  {
+    "obra":"Urban Candeias","mes":"Maio","efetivoDireto":48,"efetivoIndireto":10,
+    "idp":0.93,"nReplanejamentos":2,"dataUltimoReplan":"01/03/2026",
+    "acumPlanejado":0.5946,"acumExecutado":0.5376,
+    "compMes":0.0772,"execMes":0.0209,"compProx":0.0826,
+    "diasAtraso":21,
+    "top3Prazo":["1º Emboço de fachada","2º Coberta","3º Cerâmica"],
+    "ie":1.07,"desvioMes":-17755.42546395358,"desvioAcumulado":1182677.1,
+    "orcInicial":23820928.86,"orcTermino":25005886.87,
+    "estoqueSistema":5174470.76,"estoqueGE":542401.769,
+    "top3CustoMensal":["1º Folha - R$ 138k","2º Revestimento de parede - R$ 117k","3º Consumos gerais - R$ 37k"],
+    "top3Custo":["1º Folha - R$ 453k","2º Aquisição e locação - R$ 283k","3º Revestimento de piso - R$ 272k"],
+    "plsModI":0.6004,"proxPlsModI":null,"plsModII":null,"proxPlsModII":null
+  },
+  {
+    "obra":"Vila Gonzaga","mes":"Maio","efetivoDireto":52,"efetivoIndireto":12,
+    "idp":0.85,"nReplanejamentos":1,"dataUltimoReplan":"01/01/2026",
+    "acumPlanejado":0.212,"acumExecutado":0.1806,
+    "compMes":0.0389,"execMes":0.0358,"compProx":0.0446,
+    "diasAtraso":19,
+    "top3Prazo":["1º Estrutura","2º Terraplenagem","3º Instalações de infra"],
+    "ie":1,"desvioMes":76708.21,"desvioAcumulado":63296.45,
+    "orcInicial":47815185.3,"orcTermino":47878196.16,
+    "estoqueSistema":6175789.07,"estoqueGE":1374603.24,
+    "top3CustoMensal":["1º Ajuste de forma - R$ 60k","2º Folha forma - R$ 24k","3º Canteiro - R$ 19k"],
+    "top3Custo":["1º Forma Folha - R$ 268k","2º Instalações gás - R$ 150k","3º Ajuste de forma - R$ 128k"],
+    "plsModI":0.2432,"proxPlsModI":null,"plsModII":0.1357,"proxPlsModII":null
+  }
 ];
 const C = {green:'#1a9e4b', greenD:'#127a38', blue:'#1c8fd1', blueD:'#1167a8', warn:'#e8a317', bad:'#e23b3b', good:'#1a9e4b', grid:'#e6ebf0', muted:'#6b7785'};
 const isNil = v => v==null || (typeof v==='number' && isNaN(v));
