@@ -57,7 +57,7 @@ body{font-family:'Segoe UI',-apple-system,Roboto,Helvetica,Arial,sans-serif;back
   border:none;border-radius:10px;padding:0 22px;height:64px;font-weight:700;font-size:13px;cursor:pointer;
   letter-spacing:.3px;transition:filter .15s}
 .reset:hover{filter:brightness(1.08)}
-.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:20px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;
   box-shadow:0 2px 12px rgba(28,45,67,.05);position:relative;overflow:hidden}
 .kpi .k-top{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
@@ -206,6 +206,7 @@ tr:hover td{background:#f8fbfe}
             <th>Obra</th><th>Mês</th><th class="num">IDP</th><th class="num">Planejado</th>
             <th class="num">Executado</th><th>Status Prazo</th><th class="num">Dias</th>
             <th class="num">IE</th><th class="num">Orç. Inicial</th><th class="num">Orç. Término</th>
+            <th class="num">Desvio incorrido</th>
           </tr></thead>
           <tbody></tbody>
         </table>
@@ -227,14 +228,14 @@ tr:hover td{background:#f8fbfe}
 
 <script>
 const DATA = [
-  // ── ABRIL 2026 ──────────────────────────────────────────────────────────────
+  // ── ABRIL 2026 ─────────────────────────────────────────────────────────────────
   {
     "obra":"Vila Novo Curado","mes":"Abril","efetivoDireto":55,"efetivoIndireto":15,
     "idp":0.92,"nReplanejamentos":2,"dataUltimoReplan":"01/06/2025",
     "acumPlanejado":1,"acumExecutado":0.9209,
     "compMes":0.0179,"execMes":0.0118,"compProx":0.0238,"diasAtraso":122,
     "top3Prazo":["1º Serralharia infra","2º Paisagismo","3º Pintura"],
-    "ie":1.21,"desvioMes":null,"desvioAcumulado":6147663.03,
+    "ie":1.21,"desvioMes":null,"desvioIncorrido":null,"desvioAcumulado":6147663.03,
     "orcInicial":29107104.03,"orcTermino":35219775.84,
     "estoqueSistema":2103186.58,"estoqueGE":824926.6,
     "top3CustoMensal":null,
@@ -247,7 +248,7 @@ const DATA = [
     "acumPlanejado":0.3934,"acumExecutado":0.3934,
     "compMes":0.0429,"execMes":0.0155,"compProx":0.0327,"diasAtraso":0,
     "top3Prazo":["1º Estrutura","2º Rede de alta","3º Infra incêndio"],
-    "ie":1.05,"desvioMes":null,"desvioAcumulado":1318489.63,
+    "ie":1.05,"desvioMes":null,"desvioIncorrido":null,"desvioAcumulado":1318489.63,
     "orcInicial":50687870.98,"orcTermino":52006360.62,
     "estoqueSistema":4414131.43,"estoqueGE":1262475.51,
     "top3CustoMensal":null,
@@ -260,11 +261,11 @@ const DATA = [
     "acumPlanejado":0.5203,"acumExecutado":0.5169,
     "compMes":0.0599,"execMes":0.0578,"compProx":0.0696,"diasAtraso":1,
     "top3Prazo":["1º Base ETE","2º Emboço de fachada","3º Coberta"],
-    "ie":1.08,"desvioMes":null,"desvioAcumulado":1200432.53,
-    "orcInicial":23820928.86,"orcTermino":25021361.39,
+    "ie":1.08,"desvioMes":null,"desvioIncorrido":null,"desvioAcumulado":1200432.53,
+    "orcInicial":23818851.81,"orcTermino":25021361.39,
     "estoqueSistema":4572015.44,"estoqueGE":529469.369,
     "top3CustoMensal":null,
-    "top3Custo":["1º Folha (R$ 278k)","2º Revestimento de piso (R$273k)","3º Aquisição e locação (R$256k)"],
+    "top3Custo":["1º Folha (R$ 278k)","2º Revestimento de piso (R$273k)","3º  Aquisição e locação (R$256k)"],
     "plsModI":0.5494,"proxPlsModI":null,"plsModII":null,"proxPlsModII":null
   },
   {
@@ -273,21 +274,21 @@ const DATA = [
     "acumPlanejado":0.1586,"acumExecutado":0.146,
     "compMes":0.0496,"execMes":0.038,"compProx":0.0389,"diasAtraso":15,
     "top3Prazo":["1º Estrutura","2º Terraplenagem","3º Contenções"],
-    "ie":0.99,"desvioMes":null,"desvioAcumulado":-13415.75,
+    "ie":0.99,"desvioMes":null,"desvioIncorrido":null,"desvioAcumulado":-13415.75,
     "orcInicial":47815185.3,"orcTermino":47801773.55,
     "estoqueSistema":5150453.22,"estoqueGE":1137992.67,
     "top3CustoMensal":null,
     "top3Custo":["1º Folha (R$ 244k)","2º Gás (R$ 150k)","3º Elevador (R$ 99k)"],
     "plsModI":0.2432,"proxPlsModI":null,"plsModII":0.1357,"proxPlsModII":null
   },
-  // ── MAIO 2026 ───────────────────────────────────────────────────────────────
+  // ── MAIO 2026 ──────────────────────────────────────────────────────────────────
   {
     "obra":"Vila Novo Curado","mes":"Maio","efetivoDireto":55,"efetivoIndireto":12,
     "idp":0.94,"nReplanejamentos":2,"dataUltimoReplan":"01/06/2025",
     "acumPlanejado":1,"acumExecutado":0.9363,
     "compMes":0.0238,"execMes":0.0152,"compProx":0.0254,"diasAtraso":128,
     "top3Prazo":["1º Serralharia infra","2º Instalação de bombas","3º Pintura"],
-    "ie":1.24,"desvioMes":341350.74,"desvioAcumulado":6489013.78,
+    "ie":1.24,"desvioMes":341350.74,"desvioIncorrido":null,"desvioAcumulado":6489013.78,
     "orcInicial":29107104.03,"orcTermino":35595201.38,
     "estoqueSistema":2147677.84,"estoqueGE":1050289.48,
     "top3CustoMensal":["1º Esquadria de ferro - R$ 134k","2º Folha - R$ 60k","3º Pavimentação - R$ 55k"],
@@ -300,7 +301,7 @@ const DATA = [
     "acumPlanejado":0.4258,"acumExecutado":0.4248,
     "compMes":0.0327,"execMes":0.0313,"compProx":0.0332,"diasAtraso":0,
     "top3Prazo":["1º Estrutura","2º Infra elétrica","3º Contrapiso"],
-    "ie":1.09,"desvioMes":957962.05,"desvioAcumulado":2425858.29,
+    "ie":1.09,"desvioMes":957962.05,"desvioIncorrido":null,"desvioAcumulado":2425858.29,
     "orcInicial":50687870.98,"orcTermino":53117187.86,
     "estoqueSistema":4951073.73,"estoqueGE":1357921.89,
     "top3CustoMensal":["1º Folha - R$ 870k","2º Instalações elétricas - R$ 148k","3º Consumos - R$ 41k"],
@@ -313,10 +314,10 @@ const DATA = [
     "acumPlanejado":0.5946,"acumExecutado":0.5376,
     "compMes":0.0772,"execMes":0.0209,"compProx":0.0826,"diasAtraso":21,
     "top3Prazo":["1º Emboço de fachada","2º Coberta","3º Cerâmica"],
-    "ie":1.07,"desvioMes":-17755.42546395358,"desvioAcumulado":1182677.1,
-    "orcInicial":23820928.86,"orcTermino":25005886.87,
+    "ie":1.07,"desvioMes":-17755.42546395358,"desvioIncorrido":null,"desvioAcumulado":1182677.1,
+    "orcInicial":23818851.81,"orcTermino":25005886.87,
     "estoqueSistema":5174470.76,"estoqueGE":542401.769,
-    "top3CustoMensal":["1º Folha - R$ 138k","2º Revestimento de parede - R$ 117k","3º Consumos gerais - R$ 37k"],
+    "top3CustoMensal":["1º Folha - R$ 138k","2º Revestimento de parede - R$ 117k","3º Consumos gerais -","R$ 37k"],
     "top3Custo":["1º Folha - R$ 453k","2º Aquisição e locação - R$ 283k","3º Revestimento de piso - R$ 272k"],
     "plsModI":null,"proxPlsModI":null,"plsModII":null,"proxPlsModII":null
   },
@@ -326,24 +327,24 @@ const DATA = [
     "acumPlanejado":0.212,"acumExecutado":0.1806,
     "compMes":0.0389,"execMes":0.0358,"compProx":0.0446,"diasAtraso":19,
     "top3Prazo":["1º Estrutura","2º Terraplenagem","3º Instalações de infra"],
-    "ie":1,"desvioMes":76708.21,"desvioAcumulado":63296.45,
+    "ie":1,"desvioMes":76708.21,"desvioIncorrido":null,"desvioAcumulado":63296.45,
     "orcInicial":47815185.3,"orcTermino":47878196.16,
     "estoqueSistema":6175789.07,"estoqueGE":1374603.24,
     "top3CustoMensal":["1º Ajuste de forma - R$ 60k","2º Folha forma - R$ 24k","3º Canteiro - R$ 19k"],
-    "top3Custo":["1º Forma Folha - R$ 268k","2º Instalações gás - R$ 150k","3º Ajuste de forma - R$ 128k"],
+    "top3Custo":["1º Forma Folha -R$ 268k","2º Instalações gás - R$ 150k","3º Ajuste de forma - R$ 128k"],
     "plsModI":0.1884,"proxPlsModI":0.0703,"plsModII":0.1295,"proxPlsModII":0.0201
   },
-  // ── JUNHO 2026 ──────────────────────────────────────────────────────────────
+  // ── JUNHO 2026 ─────────────────────────────────────────────────────────────────
   {
     "obra":"Vila Novo Curado","mes":"Junho","efetivoDireto":36,"efetivoIndireto":35,
     "idp":0.95,"nReplanejamentos":2,"dataUltimoReplan":"01/06/2025",
     "acumPlanejado":1,"acumExecutado":0.9493,
     "compMes":0.0254,"execMes":0.0132,"compProx":0.0302,"diasAtraso":128,
     "top3Prazo":["1º Gradil de divisa","2º Instalação de bombas","3º Instalação de perfumaria"],
-    "ie":1.0688436178338767,"desvioMes":132301.45,"desvioAcumulado":404989.9299999997,
+    "ie":1.0688436178338767,"desvioMes":132301.45,"desvioIncorrido":null,"desvioAcumulado":404989.9299999997,
     "orcInicial":5882751.992744809,"orcTermino":6287741.922744809,
     "estoqueSistema":2252885.1,"estoqueGE":1050289.48,
-    "top3CustoMensal":["1º Aquisição e locação - R$ 121k","2º Pavimentação - R$ 34k","3º Infra elétrica - R$ 20k"],
+    "top3CustoMensal":["1º Aquisição e locação - R$ 121k","2º Pavimentação - R$ 34k","3º Infra elétrica- R$ 20k"],
     "top3Custo":["1º Aquisição e locação: R$ 398k","2º Pavimentação: R$ 146k","3º Mão de obra: R$ 123k"],
     "plsModI":0.95,"proxPlsModI":null,"plsModII":0.9481,"proxPlsModII":0.0019
   },
@@ -353,8 +354,8 @@ const DATA = [
     "acumPlanejado":0.4475,"acumExecutado":0.4477,
     "compMes":0.0323,"execMes":0.0229,"compProx":0.0457,"diasAtraso":0,
     "top3Prazo":["1º Estrutura","2º Infra elétrica","3º Cerâmica"],
-    "ie":1.12,"desvioMes":963174.39,"desvioAcumulado":3261418.71,
-    "orcInicial":50883070.949999996,"orcTermino":54138367.51,
+    "ie":1.12,"desvioMes":963174.39,"desvioIncorrido":null,"desvioAcumulado":3261418.71,
+    "orcInicial":50687870.98,"orcTermino":54138367.51,
     "estoqueSistema":5187794.35,"estoqueGE":1485715.75,
     "top3CustoMensal":["1º Estrutura - Parede: R$ 690k","2º Folha: R$ 357k","3º Consumos gerais: R$ 127k"],
     "top3Custo":["1º Radier - R$ 2.1 mi","2º Folha - R$ 1.6 mi","3º Pintura - R$ 1.27 mi"],
@@ -366,8 +367,8 @@ const DATA = [
     "acumPlanejado":0.6815,"acumExecutado":0.5879,
     "compMes":0.0826,"execMes":0.0469,"compProx":0.0932,"diasAtraso":33,
     "top3Prazo":["1º Emboço de fachada","2º Coberta","3º Janelas"],
-    "ie":1.09,"desvioMes":390847.94,"desvioAcumulado":1573525.05,
-    "orcInicial":23820928.86,"orcTermino":25396791.19,
+    "ie":1.09,"desvioMes":390847.94,"desvioIncorrido":null,"desvioAcumulado":1573525.05,
+    "orcInicial":23818851.81,"orcTermino":25396791.19,
     "estoqueSistema":5692129.16,"estoqueGE":1377912.94,
     "top3CustoMensal":["1º Aquisição e locação - R$ 111k","2º Folha - R$ 80k","3º Instalação elétrica - R$ 62k"],
     "top3Custo":["1º Folha - R$ 496k","2º Aquisição e locação - R$ 395k","3º Consumos gerais - R$ 268k"],
@@ -379,12 +380,65 @@ const DATA = [
     "acumPlanejado":0.2751,"acumExecutado":0.2226,
     "compMes":0.0446,"execMes":0.0443,"compProx":0.0545,"diasAtraso":26,
     "top3Prazo":["1º Estrutura","2º Instalações de infra","3º Castelo - Montagem"],
-    "ie":1.12,"desvioMes":1373995.45,"desvioAcumulado":1494692.48,
+    "ie":1.12,"desvioMes":1373995.45,"desvioIncorrido":null,"desvioAcumulado":1494692.48,
     "orcInicial":47815185.3,"orcTermino":49313477.79,
     "estoqueSistema":2464392.12,"estoqueGE":1469543.15,
     "top3CustoMensal":["1º Estrutura - R$ 578k","2º Folha forma - R$ 175k","3º Gás - R$ 145k"],
     "top3Custo":["1º Estrutura - R$ 578k","2º Folha forma - R$ 376k","3º Gás - R$ 295k"],
     "plsModI":0.2432,"proxPlsModI":0.0522,"plsModII":0.1357,"proxPlsModII":0.0311
+  },
+  // ── JULHO 2026 ─────────────────────────────────────────────────────────────────
+  {
+    "obra":"Vila Novo Curado","mes":"Julho","efetivoDireto":34,"efetivoIndireto":31,
+    "idp":0.9694,"nReplanejamentos":2,"dataUltimoReplan":"01/06/2025",
+    "acumPlanejado":1,"acumExecutado":0.9694,
+    "compMes":0.0302,"execMes":0.0201,"compProx":0.0261,"diasAtraso":178,
+    "top3Prazo":["1. Perfumaria","2. Instalação castelo","3. Instalação piscina"],
+    "ie":1.1461375443092374,"desvioMes":436269.13,"desvioIncorrido":null,"desvioAcumulado":859690.9299999997,
+    "orcInicial":5882751.992744809,"orcTermino":6742442.922744809,
+    "estoqueSistema":1649614.25,"estoqueGE":1050289.48,
+    "top3CustoMensal":["1º Aquisição e locação - R$ 91k","2º Pavimentação - R$ 76k","3º Infra complementares - R$ 58k"],
+    "top3Custo":["1º Aquisição e locação: R$ 395k","2º Pavimentação: R$ 146k","3º Mão de obra: R$ 123k"],
+    "plsModI":0.95,"proxPlsModI":null,"plsModII":0.95,"proxPlsModII":null
+  },
+  {
+    "obra":"Vila Paraíso","mes":"Julho","efetivoDireto":84,"efetivoIndireto":26,
+    "idp":0.987981258912202,"nReplanejamentos":2,"dataUltimoReplan":"01/05/2026",
+    "acumPlanejado":0.4909,"acumExecutado":0.485,
+    "compMes":0.0451,"execMes":0.0373,"compProx":0.0462,"diasAtraso":2,
+    "top3Prazo":["1. Rede de alta","2. Infra elétrica","3. Cerâmica"],
+    "ie":0.011200000000000002,"desvioMes":125062.69,"desvioIncorrido":1008521.37,"desvioAcumulado":3580914.67,
+    "orcInicial":50687870.98,"orcTermino":54450210.06,
+    "estoqueSistema":4550632.57,"estoqueGE":1973423.45,
+    "top3CustoMensal":["1º Indiretos - folha: 162k","2º Estrutura: R$ 141k","3º Aquisição e locação: R$ 117k"],
+    "top3Custo":["1º Radier: R$ 2mi","2º Folha: R$ 1,4mi","3º Pintura: R$ 1,2 mi"],
+    "plsModI":0.538,"proxPlsModI":0.0707,"plsModII":0.3452,"proxPlsModII":0.0047
+  },
+  {
+    "obra":"Urban Candeias","mes":"Julho","efetivoDireto":64,"efetivoIndireto":13,
+    "idp":0.8135771608998815,"nReplanejamentos":2,"dataUltimoReplan":"01/03/2026",
+    "acumPlanejado":0.7601,"acumExecutado":0.6184,
+    "compMes":0.0932,"execMes":0.0306,"compProx":0.1003,"diasAtraso":52,
+    "top3Prazo":["1. Emboço de fachada","2. Textura de fachada","3. Janelas"],
+    "ie":0.0111,"desvioMes":299158.06,"desvioIncorrido":1551541.43,"desvioAcumulado":1872683.11,
+    "orcInicial":23818851.81,"orcTermino":25672219.29,
+    "estoqueSistema":5692129.17,"estoqueGE":1234480.78,
+    "top3CustoMensal":["1º Folha - R4 135k","2º Consumos gerais - R$ 87k","3º Aquisição e locação - R$ 83k"],
+    "top3Custo":["1º Folha - 631k","2º Aquisição e locação - R$ 479k","3º Consumos gerais - R$ 355k"],
+    "plsModI":0.6169,"proxPlsModI":0.0725,"plsModII":null,"proxPlsModII":null
+  },
+  {
+    "obra":"Vila Gonzaga","mes":"Julho","efetivoDireto":48,"efetivoIndireto":18,
+    "idp":0.7804439112177565,"nReplanejamentos":1,"dataUltimoReplan":"01/01/2026",
+    "acumPlanejado":0.3334,"acumExecutado":0.2602,
+    "compMes":0.0545,"execMes":0.0376,"compProx":0.0434,"diasAtraso":26,
+    "top3Prazo":["1. Estrutura","2. Infra elétrica","3. Infra esgoto"],
+    "ie":1.15,"desvioMes":861163.74,"desvioIncorrido":446405.7,"desvioAcumulado":2337700.38,
+    "orcInicial":47815185.3,"orcTermino":50383500.76,
+    "estoqueSistema":2983537.64,"estoqueGE":1305327.79,
+    "top3CustoMensal":["1º Esquadria de alumínio - R$ 446k","2º Indiretos - folha: R$ 247k","3º Revestimento de piso: R$ 161k"],
+    "top3Custo":["1º Estrutura - R$ 585k","2º R$ Esquadrias de alumínio: R$ 448k","3º Revestimento de piso: R$ 300k"],
+    "plsModI":0.324,"proxPlsModI":0.0552,"plsModII":0.1477,"proxPlsModII":0.013
   }
 ];
 const C = {green:'#1a9e4b', greenD:'#127a38', blue:'#1c8fd1', blueD:'#1167a8', warn:'#e8a317', bad:'#e23b3b', good:'#1a9e4b', grid:'#e6ebf0', muted:'#6b7785'};
@@ -433,6 +487,8 @@ function renderKPIs(rows){
   const desvOrc = (orcT>0&&orcI>0) ? orcT-orcI : null;
   const desvAcum = sum('desvioAcumulado');
   const hasDesvAcum = rows.some(r=>r.desvioAcumulado!=null);
+  const desvIncorrido = sum('desvioIncorrido');
+  const hasDesvIncorrido = rows.some(r=>r.desvioIncorrido!=null);
   const k=[
     {t:'Dias de atraso',v:diasVal==null?'—':num(diasVal),s:diasLabel,cls:diasVal==null?'':(badDias(diasVal)?'val-bad':'val-good'),g:1},
     {t:'IDP'+suf,v:dec(idp),s:'desempenho de prazo',cls: idp==null?'':(badIDP(idp)?'val-bad':'val-good')},
@@ -440,6 +496,8 @@ function renderKPIs(rows){
     {t:'Avanço'+suf,v:pct(av),s:'executado acumulado',cls: (av!=null&&avPlan!=null)?(av>=avPlan?'val-good':'val-bad'):''},
     {t:'Desvio acumulado',v:hasDesvAcum?(desvAcum>=0?'+':'')+brlFull(desvAcum):'—',
      s:'custo acumulado vs orçado',cls:!hasDesvAcum?'':(desvAcum>0?'val-bad':'val-good'),g:1},
+    {t:'Desvio incorrido',v:hasDesvIncorrido?(desvIncorrido>=0?'+':'')+brlFull(desvIncorrido):'—',
+     s:'desvio de custo já incorrido no período',cls:!hasDesvIncorrido?'':(desvIncorrido>0?'val-bad':'val-good'),g:1},
   ];
   // Mini-anel PLS — média MOD I e MOD II + próxima PLS
   const plsVals  = rows.map(r=>r.plsModI).filter(x=>x!=null);
@@ -583,6 +641,7 @@ function renderTable(rows){
     const ieCls  = badIE(d.ie)?'cell-bad':'cell-good';
     const orcCls = badOrc(d)?'cell-bad':'cell-good';
     const diasCls= badDias(d.diasAtraso)?'cell-bad':'cell-good';
+    const desvIncCls = d.desvioIncorrido==null?'':(d.desvioIncorrido>0?'cell-bad':'cell-good');
     return `<tr><td><b>${d.obra}</b></td><td>${d.mes}</td>
       <td class="num ${idpCls}">${dec(d.idp)}</td>
       <td class="num">${pct(d.acumPlanejado)}</td><td class="num">${pct(d.acumExecutado)}</td>
@@ -590,7 +649,8 @@ function renderTable(rows){
       <td class="num ${diasCls}">${num(d.diasAtraso)}</td>
       <td class="num ${ieCls}">${dec(d.ie)}</td>
       <td class="num">${brlFull(d.orcInicial)}</td>
-      <td class="num ${orcCls}">${brlFull(d.orcTermino)}</td></tr>`;
+      <td class="num ${orcCls}">${brlFull(d.orcTermino)}</td>
+      <td class="num ${desvIncCls}">${d.desvioIncorrido==null?'—':(d.desvioIncorrido>=0?'+':'')+brlFull(d.desvioIncorrido)}</td></tr>`;
   }).join('');
 }
 
