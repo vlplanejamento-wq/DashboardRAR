@@ -81,6 +81,12 @@ body{font-family:'Segoe UI',-apple-system,Roboto,Helvetica,Arial,sans-serif;back
 .card .hint{font-size:12px;color:var(--muted);margin-bottom:16px}
 .chartbox{position:relative;height:300px;width:100%;min-width:0}
 .full{grid-column:1/-1}
+.hist-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.hist-item{border:1px solid var(--line);border-radius:12px;padding:12px 12px 6px;background:#fbfdff;min-width:0}
+.hist-item h3{font-size:13px;font-weight:700;color:var(--vl-blue-d);margin-bottom:2px}
+.hist-item .h-last{font-size:11.5px;color:var(--muted);margin-bottom:6px}
+.hist-item .h-last b.bad{color:var(--bad)} .hist-item .h-last b.good{color:var(--good)}
+.histbox{position:relative;height:210px;width:100%}
 .hidden{display:none!important}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
@@ -204,6 +210,12 @@ tr:hover td{background:#f8fbfe}
       <h2>Orçamento — Inicial x Término</h2>
       <div class="hint">Término em vermelho quando maior que o inicial (R$)</div>
       <div class="chartbox"><canvas id="chOrc"></canvas></div>
+    </div>
+
+    <div class="card full" id="cardHist">
+      <h2>Histórico de IE e IDP</h2>
+      <div class="hint">Evolução mensal por obra · linha tracejada = 1,00 · IE acima de 1 e IDP abaixo de 1 em vermelho</div>
+      <div class="hist-grid" id="histWrap"></div>
     </div>
 
     <div class="card full" id="cardReplan">
@@ -528,11 +540,17 @@ function fillFilters(){
   if(fObra && !fObra.options.length)
     fObra.innerHTML='<option value="">Todas as obras</option>'+obras.map(o=>`<option>${o}</option>`).join('');
   if(fMes && !fMes.options.length)
-    fMes.innerHTML='<option value="">Todos os meses</option>'+meses.map(m=>`<option>${m}</option>`).join('');
+    fMes.innerHTML='<option value="">Último mês</option>'+meses.map(m=>`<option>${m}</option>`).join('');
 }
 
 let charts={};
-function filtered(){return DATA.filter(d=>(!fObra.value||d.obra===fObra.value)&&(!fMes.value||d.mes===fMes.value));}
+function filtered(){
+  const base=DATA.filter(d=>!fObra.value||d.obra===fObra.value);
+  if(fMes.value) return base.filter(d=>d.mes===fMes.value);
+  // Sem mês selecionado: último mês disponível de cada obra
+  const last={}; base.forEach(d=>{ last[d.obra]=d; });
+  return Object.values(last);
+}
 const allObras = ()=> !fObra.value;   // true quando filtro = todas as obras
 
 function statusPrazo(d){
@@ -773,10 +791,50 @@ function renderInd(){
     document.getElementById(id+'s').textContent=lbl+(a!=null?suf:'');
   });
 }
+// Histórico de IE e IDP — um gráfico por obra; respeita o filtro de obra e ignora o filtro de mês
+function renderHist(){
+  const wrap=document.getElementById('histWrap'); if(!wrap) return;
+  Object.keys(charts).filter(k=>k.startsWith('chHist_')).forEach(k=>{try{charts[k].destroy();}catch(e){} delete charts[k];});
+  const lista = fObra.value ? [fObra.value] : obras;
+  const f2 = v => isNil(v) ? '—' : v.toFixed(2).replace('.',',');
+  wrap.innerHTML = lista.map((o,i)=>{
+    const rs=DATA.filter(d=>d.obra===o);
+    const u=rs[rs.length-1]||{};
+    const ieC = isNil(u.ie)?'':(badIE(u.ie)?'bad':'good'), idC = isNil(u.idp)?'':(badIDP(u.idp)?'bad':'good');
+    return `<div class="hist-item"><h3>${o}</h3>
+      <div class="h-last">${u.mes||''}: IE <b class="${ieC}">${f2(u.ie)}</b> · IDP <b class="${idC}">${f2(u.idp)}</b></div>
+      <div class="histbox"><canvas id="chHist_${i}"></canvas></div></div>`;
+  }).join('');
+  lista.forEach((o,i)=>{
+    const byMes=m=>DATA.find(d=>d.obra===o&&d.mes===m)||{};
+    const ie = meses.map(m=>isNil(byMes(m).ie)?null:byMes(m).ie);
+    const idp= meses.map(m=>isNil(byMes(m).idp)?null:byMes(m).idp);
+    const vals=[...ie,...idp,1].filter(v=>v!=null);
+    const lo=Math.floor((Math.min(...vals)-0.04)*10)/10, hi=Math.ceil((Math.max(...vals)+0.04)*10)/10;
+    const lbl = isMob()? meses.map(m=>m.slice(0,3)) : meses;
+    mk('chHist_'+i,{type:'line',data:{labels:lbl,datasets:[
+      {label:'IE',data:ie,borderColor:C.blueD,backgroundColor:C.blueD,borderWidth:2.5,tension:0,spanGaps:true,
+        pointRadius:4.5,pointBackgroundColor:ie.map(v=>badIE(v)?C.bad:C.good),pointBorderColor:'#fff',pointBorderWidth:1.5,
+        datalabels:{align:'top',anchor:'end',offset:3,color:ie.map(v=>badIE(v)?C.bad:C.good)}},
+      {label:'IDP',data:idp,borderColor:C.warn,backgroundColor:C.warn,borderWidth:2.5,tension:0,spanGaps:true,
+        pointRadius:4.5,pointBackgroundColor:idp.map(v=>badIDP(v)?C.bad:C.good),pointBorderColor:'#fff',pointBorderWidth:1.5,
+        datalabels:{align:'bottom',anchor:'start',offset:3,color:idp.map(v=>badIDP(v)?C.bad:C.good)}},
+      {label:'Referência 1,00',data:meses.map(()=>1),borderColor:C.muted,borderWidth:1.2,borderDash:[5,4],pointRadius:0,
+        datalabels:{display:false}}]},
+      options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:14,left:4,right:10}},
+        scales:{y:{min:lo,max:hi,ticks:{stepSize:0.1,callback:v=>v.toFixed(2).replace('.',','),color:C.muted,font:{size:10}},grid:{color:C.grid}},
+                x:{ticks:{color:C.muted,font:{size:10}},grid:{display:false}}},
+        plugins:{legend:{position:'bottom',labels:{font:{size:11},color:C.muted,boxWidth:18,boxHeight:3,
+            generateLabels:ch=>ch.data.datasets.slice(0,2).map((d,j)=>({text:d.label,fillStyle:d.borderColor,strokeStyle:d.borderColor,lineWidth:0,datasetIndex:j,hidden:!ch.isDatasetVisible(j),fontColor:C.muted}))}},
+          tooltip:{callbacks:{label:c=>c.dataset.label+': '+f2(c.parsed.y)}},
+          datalabels:{font:{weight:'700',size:10},formatter:v=>v==null?'':f2(v)}}}});
+  });
+}
 function render(){
   fillFilters();
   const rows=filtered();
-  const mesSel = fMes.value||(meses.length===1?meses[0]:'Todos os meses');
+  const mesesRows=[...new Set(rows.map(r=>r.mes))];
+  const mesSel = fMes.value||(mesesRows.length===1?mesesRows[0]:'Último mês ('+mesesRows.join(' / ')+')');
   document.getElementById('stampMes').textContent=mesSel;
   const notaSaldo = document.getElementById('notaSaldo');
   if(notaSaldo) notaSaldo.style.display = mesSel==='Junho' ? 'block' : 'none';
@@ -805,6 +863,7 @@ function render(){
   document.getElementById('cardReplan').classList.toggle('hidden', !allObras());
   // Gráficos (dependem do Chart.js; protegidos individualmente)
   try{ renderCharts(rows); }catch(e){}
+  try{ renderHist(); }catch(e){}
 }
 fObra.onchange=render;fMes.onchange=render;
 document.getElementById('btnReset').onclick=()=>{fObra.value='';fMes.value='';render();};
