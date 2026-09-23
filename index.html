@@ -53,11 +53,13 @@ body{font-family:'Segoe UI',-apple-system,Roboto,Helvetica,Arial,sans-serif;back
 .filter select{border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:14px;color:var(--ink);
   background:#fbfdff;cursor:pointer;outline:none;font-family:inherit}
 .filter select:focus{border-color:var(--vl-blue)}
-.ind{min-width:120px;align-items:center;text-align:center;justify-content:center}
+.filters .filter{min-width:200px}
+.filters .ind{min-width:110px;padding:12px 12px}
+.ind{align-items:center;text-align:center;justify-content:center}
 .ind .i-val{font-size:22px;font-weight:800;letter-spacing:-.4px;color:var(--ink);line-height:1.1}
 .ind .i-val.good{color:var(--good)} .ind .i-val.bad{color:var(--bad)}
 .ind .i-sub{font-size:10.5px;color:var(--muted)}
-.reset{align-self:flex-end;margin-left:auto;background:linear-gradient(135deg,var(--vl-green),var(--vl-blue));color:#fff;
+.reset{align-self:stretch;height:auto!important;margin-left:auto;background:linear-gradient(135deg,var(--vl-green),var(--vl-blue));color:#fff;
   border:none;border-radius:10px;padding:0 22px;height:64px;font-weight:700;font-size:13px;cursor:pointer;
   letter-spacing:.3px;transition:filter .15s}
 .reset:hover{filter:brightness(1.08)}
@@ -125,10 +127,10 @@ tr:hover td{background:#f8fbfe}
 .footer{text-align:center;color:var(--muted);font-size:11.5px;margin-top:26px}
 @media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}.dev-grid{grid-template-columns:1fr}}
 @media(max-width:600px){
-  .filters .filter{flex:1 1 calc(50% - 4px)}
-  .filters .ind{flex:1 1 calc(33% - 6px);min-width:0;padding:10px 6px}
+  .filters .filter{flex:1 1 calc(50% - 4px);min-width:0}
+  .filters .ind{flex:1 1 calc(50% - 4px);min-width:0;padding:10px 6px}
   .ind .i-val{font-size:18px} .ind .i-sub{font-size:9.5px}
-  .reset{flex:1 1 100%;height:44px;margin-left:0}
+  .reset{flex:1 1 100%;height:44px!important;margin-left:0}
   .kpis{grid-template-columns:repeat(2,1fr)}
   .topbar{flex-wrap:wrap}
   .balloon{width:calc(50% - 8px)}
@@ -174,6 +176,7 @@ tr:hover td{background:#f8fbfe}
     <div class="filter"><label for="fMes">Mês</label><select id="fMes"></select></div>
     <div class="filter ind"><label>PPC atual</label><div class="i-val" id="iPPC">—</div><div class="i-sub" id="iPPCs">planos concluídos</div></div>
     <div class="filter ind"><label>IRR atual</label><div class="i-val" id="iIRR">—</div><div class="i-sub" id="iIRRs">remoção de restrições</div></div>
+    <div class="filter ind"><label>IRR no prazo</label><div class="i-val" id="iIRP">—</div><div class="i-sub" id="iIRPs">removidas no prazo</div></div>
     <div class="filter ind"><label>Aderência atual</label><div class="i-val" id="iADE">—</div><div class="i-sub" id="iADEs">ao planejamento</div></div>
     <button class="reset" id="btnReset">Limpar filtros</button>
   </section>
@@ -243,7 +246,7 @@ const DATA = [
   {
     "obra":"Vila Novo Curado","mes":"Abril","efetivoDireto":55,"efetivoIndireto":15,
     "idp":0.92,"nReplanejamentos":2,"dataUltimoReplan":"01/06/2025",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":1,"acumExecutado":0.9209,
     "compMes":0.0179,"execMes":0.0118,"compProx":0.0238,"diasAtraso":122,
     "top3Prazo":["1º Serralharia infra", "2º Paisagismo", "3º Pintura"],
@@ -257,7 +260,7 @@ const DATA = [
   {
     "obra":"Vila Paraíso","mes":"Abril","efetivoDireto":64,"efetivoIndireto":18,
     "idp":1,"nReplanejamentos":2,"dataUltimoReplan":"01/05/2026",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":0.3934,"acumExecutado":0.3934,
     "compMes":0.0429,"execMes":0.0155,"compProx":0.0327,"diasAtraso":0,
     "top3Prazo":["1º Estrutura", "2º Rede de alta", "3º Infra incêndio"],
@@ -271,7 +274,7 @@ const DATA = [
   {
     "obra":"Urban Candeias","mes":"Abril","efetivoDireto":48,"efetivoIndireto":10,
     "idp":0.99,"nReplanejamentos":2,"dataUltimoReplan":"01/03/2026",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":0.5203,"acumExecutado":0.5169,
     "compMes":0.0599,"execMes":0.0578,"compProx":0.0696,"diasAtraso":1,
     "top3Prazo":["1º Base ETE", "2º Emboço de fachada", "3º Coberta"],
@@ -285,7 +288,7 @@ const DATA = [
   {
     "obra":"Vila Gonzaga","mes":"Abril","efetivoDireto":52,"efetivoIndireto":12,
     "idp":0.92,"nReplanejamentos":1,"dataUltimoReplan":"01/01/2026",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":0.1586,"acumExecutado":0.146,
     "compMes":0.0496,"execMes":0.038,"compProx":0.0389,"diasAtraso":15,
     "top3Prazo":["1º Estrutura", "2º Terraplenagem", "3º Contenções"],
@@ -300,7 +303,7 @@ const DATA = [
   {
     "obra":"Vila Novo Curado","mes":"Maio","efetivoDireto":55,"efetivoIndireto":12,
     "idp":0.94,"nReplanejamentos":2,"dataUltimoReplan":"01/06/2025",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":1,"acumExecutado":0.9363,
     "compMes":0.0238,"execMes":0.0152,"compProx":0.0254,"diasAtraso":128,
     "top3Prazo":["1º Serralharia infra", "2º Instalação de bombas", "3º Pintura"],
@@ -314,7 +317,7 @@ const DATA = [
   {
     "obra":"Vila Paraíso","mes":"Maio","efetivoDireto":64,"efetivoIndireto":18,
     "idp":1,"nReplanejamentos":2,"dataUltimoReplan":"01/05/2026",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":0.4258,"acumExecutado":0.4248,
     "compMes":0.0327,"execMes":0.0313,"compProx":0.0332,"diasAtraso":0,
     "top3Prazo":["1º Estrutura", "2º Infra elétrica", "3º Contrapiso"],
@@ -328,7 +331,7 @@ const DATA = [
   {
     "obra":"Urban Candeias","mes":"Maio","efetivoDireto":48,"efetivoIndireto":10,
     "idp":0.93,"nReplanejamentos":2,"dataUltimoReplan":"01/03/2026",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":0.5946,"acumExecutado":0.5376,
     "compMes":0.0772,"execMes":0.0209,"compProx":0.0826,"diasAtraso":21,
     "top3Prazo":["1º Emboço de fachada", "2º Coberta", "3º Cerâmica"],
@@ -342,7 +345,7 @@ const DATA = [
   {
     "obra":"Vila Gonzaga","mes":"Maio","efetivoDireto":52,"efetivoIndireto":12,
     "idp":0.85,"nReplanejamentos":1,"dataUltimoReplan":"01/01/2026",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":0.212,"acumExecutado":0.1806,
     "compMes":0.0389,"execMes":0.0358,"compProx":0.0446,"diasAtraso":19,
     "top3Prazo":["1º Estrutura", "2º Terraplenagem", "3º Instalações de infra"],
@@ -357,7 +360,7 @@ const DATA = [
   {
     "obra":"Vila Novo Curado","mes":"Junho","efetivoDireto":36,"efetivoIndireto":35,
     "idp":0.95,"nReplanejamentos":2,"dataUltimoReplan":"01/06/2025",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":1,"acumExecutado":0.9493,
     "compMes":0.0254,"execMes":0.0132,"compProx":0.0302,"diasAtraso":128,
     "top3Prazo":["1º Gradil de divisa", "2º Instalação de bombas", "3º Instalação de perfumaria"],
@@ -371,7 +374,7 @@ const DATA = [
   {
     "obra":"Vila Paraíso","mes":"Junho","efetivoDireto":70,"efetivoIndireto":30,
     "idp":1,"nReplanejamentos":2,"dataUltimoReplan":"01/05/2026",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":0.4475,"acumExecutado":0.4477,
     "compMes":0.0323,"execMes":0.0229,"compProx":0.0457,"diasAtraso":0,
     "top3Prazo":["1º Estrutura", "2º Infra elétrica", "3º Cerâmica"],
@@ -385,7 +388,7 @@ const DATA = [
   {
     "obra":"Urban Candeias","mes":"Junho","efetivoDireto":73,"efetivoIndireto":10,
     "idp":0.86,"nReplanejamentos":2,"dataUltimoReplan":"01/03/2026",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":0.6815,"acumExecutado":0.5879,
     "compMes":0.0826,"execMes":0.0469,"compProx":0.0932,"diasAtraso":33,
     "top3Prazo":["1º Emboço de fachada", "2º Coberta", "3º Janelas"],
@@ -399,7 +402,7 @@ const DATA = [
   {
     "obra":"Vila Gonzaga","mes":"Junho","efetivoDireto":57,"efetivoIndireto":12,
     "idp":0.81,"nReplanejamentos":1,"dataUltimoReplan":"01/01/2026",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":0.2751,"acumExecutado":0.2226,
     "compMes":0.0446,"execMes":0.0443,"compProx":0.0545,"diasAtraso":26,
     "top3Prazo":["1º Estrutura", "2º Instalações de infra", "3º Castelo - Montagem"],
@@ -414,7 +417,7 @@ const DATA = [
   {
     "obra":"Vila Novo Curado","mes":"Julho","efetivoDireto":34,"efetivoIndireto":31,
     "idp":0.9694,"nReplanejamentos":2,"dataUltimoReplan":"01/06/2025",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":1,"acumExecutado":0.9694,
     "compMes":0.0302,"execMes":0.0201,"compProx":0.0261,"diasAtraso":178,
     "top3Prazo":["1. Perfumaria", "2. Instalação castelo", "3. Instalação piscina"],
@@ -428,7 +431,7 @@ const DATA = [
   {
     "obra":"Vila Paraíso","mes":"Julho","efetivoDireto":84,"efetivoIndireto":26,
     "idp":0.9879812589,"nReplanejamentos":2,"dataUltimoReplan":"01/05/2026",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":0.4909,"acumExecutado":0.485,
     "compMes":0.0451,"execMes":0.0373,"compProx":0.0462,"diasAtraso":2,
     "top3Prazo":["1. Rede de alta", "2. Infra elétrica", "3. Cerâmica"],
@@ -442,7 +445,7 @@ const DATA = [
   {
     "obra":"Urban Candeias","mes":"Julho","efetivoDireto":64,"efetivoIndireto":13,
     "idp":0.8135771609,"nReplanejamentos":2,"dataUltimoReplan":"01/03/2026",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":0.7601,"acumExecutado":0.6184,
     "compMes":0.0932,"execMes":0.0306,"compProx":0.1003,"diasAtraso":52,
     "top3Prazo":["1. Emboço de fachada", "2. Textura de fachada", "3. Janelas"],
@@ -456,7 +459,7 @@ const DATA = [
   {
     "obra":"Vila Gonzaga","mes":"Julho","efetivoDireto":48,"efetivoIndireto":18,
     "idp":0.7804439112,"nReplanejamentos":1,"dataUltimoReplan":"01/01/2026",
-    "ppc":null,"irr":null,"aderencia":null,
+    "ppc":null,"irr":null,"irrPrazo":null,"aderencia":null,
     "acumPlanejado":0.3334,"acumExecutado":0.2602,
     "compMes":0.0545,"execMes":0.0376,"compProx":0.0434,"diasAtraso":26,
     "top3Prazo":["1º Estrutura", "2º Infra elétrica", "3º Infra esgoto"],
@@ -471,7 +474,7 @@ const DATA = [
   {
     "obra":"Vila Paraíso","mes":"Agosto","efetivoDireto":90,"efetivoIndireto":14,
     "idp":0.97,"nReplanejamentos":2,"dataUltimoReplan":"01/05/2026",
-    "ppc":0.4083,"irr":0.7429,"aderencia":0.7011,
+    "ppc":0.4083,"irr":0.7429,"irrPrazo":0.2929,"aderencia":0.7011,
     "acumPlanejado":0.5382,"acumExecutado":0.5233,
     "compMes":0.0462,"execMes":0.0372,"compProx":0.0548,"diasAtraso":0,
     "top3Prazo":["1º Infra elétrica", "2º Cerâmica", "3º Janelas"],
@@ -485,7 +488,7 @@ const DATA = [
   {
     "obra":"Urban Candeias","mes":"Agosto","efetivoDireto":69,"efetivoIndireto":11,
     "idp":0.76,"nReplanejamentos":2,"dataUltimoReplan":"01/03/2026",
-    "ppc":0.2286,"irr":0.619,"aderencia":0.8671,
+    "ppc":0.2286,"irr":0.619,"irrPrazo":0.2143,"aderencia":0.8671,
     "acumPlanejado":0.8292,"acumExecutado":0.6314,
     "compMes":0.1003,"execMes":0.0146,"compProx":0.0441,"diasAtraso":75,
     "top3Prazo":["1. Emboço de fachada", "2. Textura de fachada", "3. Cerâmica"],
@@ -499,7 +502,7 @@ const DATA = [
   {
     "obra":"Vila Gonzaga","mes":"Agosto","efetivoDireto":66,"efetivoIndireto":15,
     "idp":0.71,"nReplanejamentos":1,"dataUltimoReplan":"01/01/2026",
-    "ppc":0.34,"irr":0.7333,"aderencia":1.1123,
+    "ppc":0.34,"irr":0.7333,"irrPrazo":0.2952,"aderencia":1.1123,
     "acumPlanejado":0.3994,"acumExecutado":0.2845,
     "compMes":0.0434,"execMes":0.0259,"compProx":0.0261,"diasAtraso":58,
     "top3Prazo":["1º Estrutura", "2º Instalações de infra", "3º Cerâmica"],
@@ -757,11 +760,11 @@ function renderInd(){
   // Indicadores "atuais": ignoram o filtro de mês e usam o último valor disponível de cada obra
   const rows = [];
   (fObra.value ? [fObra.value] : obras).forEach(o=>{
-    const r = DATA.filter(d=>d.obra===o && (!isNil(d.ppc)||!isNil(d.irr)||!isNil(d.aderencia)));
+    const r = DATA.filter(d=>d.obra===o && (!isNil(d.ppc)||!isNil(d.irr)||!isNil(d.irrPrazo)||!isNil(d.aderencia)));
     if(r.length) rows.push(r[r.length-1]);
   });
   const suf = allObras() ? ' (média)' : '';
-  [['ppc','iPPC','planos concluídos'],['irr','iIRR','remoção de restrições'],['aderencia','iADE','ao planejamento']].forEach(([f,id,lbl])=>{
+  [['ppc','iPPC','planos concluídos'],['irr','iIRR','remoção de restrições'],['irrPrazo','iIRP','removidas no prazo'],['aderencia','iADE','ao planejamento']].forEach(([f,id,lbl])=>{
     const v=rows.map(r=>r[f]).filter(x=>!isNil(x));
     const a=v.length? v.reduce((p,q)=>p+q,0)/v.length : null;
     const el=document.getElementById(id);
